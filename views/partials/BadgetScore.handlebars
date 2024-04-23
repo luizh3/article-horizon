@@ -1,0 +1,17 @@
+<div
+  class="flex shadow-md p-3 text-primary bg-white rounded font-bold space-x-5 w-56"
+>
+  <label>{{title}}</label>
+  <span
+    class="
+    {{#if ( isBiggerOrEqual score 8)}}
+    bg-green100 text-green800
+    {{else}}
+        {{#if (isBiggerOrEqual score 6)}}
+         bg-yellow100 text-yellow800
+        {{else}}
+         bg-red100 text-red800 
+        {{/if}}
+    {{/if}} text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+  >{{score}}</span>
+</div>

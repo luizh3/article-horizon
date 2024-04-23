@@ -1,0 +1,27 @@
+<div class="relative inline-block text-left group">
+  <a
+    href="#"
+    class="hover:bg-secundaryHover rounded-md px-3 py-2 text-sm font-medium inline-flex"
+    aria-current="page"
+  >{{title}}</a>
+  <div
+    class="border hidden group-hover:block border-secundaryHover border-base absolute right-0 z-10 w-56 origin-top-right rounded-md bg-white shadow-lg"
+    role="menu"
+    aria-orientation="vertical"
+    aria-labelledby="menu-button"
+    tabindex="-1"
+  >
+    <div class="py-1" role="none">
+      <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
+      {{#each menus}}
+        <a
+          href="{{href}}"
+          class="text-gray-700 block px-4 py-2 text-sm hover:bg-secundaryHover"
+          role="menuitem"
+          tabindex="-1"
+          id="menu-item-0"
+        >{{title}}</a>
+      {{/each}}
+    </div>
+  </div>
+</div>

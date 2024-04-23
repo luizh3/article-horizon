@@ -1,0 +1,98 @@
+<form class="flex flex-col w-2/4" action="{{view.action}}" method="POST">
+
+      <h2 class="font-semibold leading-7">{{view.title}}</h2>
+      <p class="mt-1 text-sm leading-6 text-gray-600 ">{{view.description}}</p>
+
+      <div class="flex flex-col justify-between bg-base basis-full">
+
+      <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+
+        <div class="sm:col-span-3">
+          <label
+            for="name"
+            class="block text-sm font-medium leading-6 text-gray-900"
+          >Nome</label>
+          <div class="mt-2">
+            <input
+              id="name"
+              type="text"
+              name="name"
+              value="{{user.name}}"
+              class="block w-full rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="sm:col-span-3">
+          <label
+            for="email"
+            class="block text-sm font-medium leading-6 text-gray-900"
+          >E-mail</label>
+          <div class="mt-2">
+            <input
+              id="email"
+              type="email"
+              name="email"
+              value="{{user.email}}"
+              class="block w-full rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              required
+            />
+          </div>
+          <label class="text-remove">
+            {{errors.email.text}}
+          </label>
+        </div>
+
+         <div class="sm:col-span-3">
+          <label
+            for="username"
+            class="block text-sm font-medium leading-6 text-gray-900"
+          >Username</label>
+          <div class="mt-2">
+            <input
+              id="username"
+              type="text"
+              name="username"
+              value="{{user.username}}"
+              class="block w-full rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              required
+            />
+          </div>
+          <label class="text-remove">
+            {{errors.username.text}}
+          </label>
+        </div>
+
+        <div class="sm:col-span-3">
+          <label
+            for="password"
+            class="block text-sm font-medium leading-6 text-gray-900"
+          >Senha</label>
+          <div class="mt-2">
+            <input
+              id="password"
+              type="password"
+              name="password"
+              value="{{user.password}}"
+              class="block w-full rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              required
+            />
+          </div>
+        </div>
+
+        {{> select options=view.authorsSelect }}
+
+    </div>
+
+  <div class="mt-6 flex items-center justify-end gap-x-6 content-end">
+    <button
+      type="button"
+      class="text-sm font-semibold leading-6 text-gray-900"
+    >Cancel</button>
+      {{> button text="Salvar"}}
+  </div>
+
+  </div>
+
+</form>

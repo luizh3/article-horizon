@@ -1,0 +1,176 @@
+<form class="flex flex-col w-2/4 " action="/article/create" method="POST">
+
+      <h2 class="font-semibold leading-7">Criar artigo</h2>
+      <p class="mt-1 text-sm leading-6 text-gray-600 ">Esta informação será
+        exibido publicamente, então tome cuidado com o que você compartilha.</p>
+
+      <div class="flex flex-col justify-between bg-base basis-full">
+
+      <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+
+        <div class="sm:col-span-3">
+          <label
+            for="title"
+            class="block text-sm font-medium leading-6 text-gray-900"
+          >Titulo</label>
+          <div class="mt-2">
+            <input
+              id="title"
+              type="text"
+              name="title"
+              value="{{title}}"
+              class="block w-full rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+        </div>
+
+        <div class="sm:col-span-3">
+          <label
+            for="linkPdf"
+            class="block text-sm font-medium leading-6 text-gray-900"
+          >Link PDF</label>
+          <div class="mt-2">
+            <input
+              id="linkPdf"
+              type="text"
+              name="linkPdf"
+              value="{{linkPdf}}"
+              class="block w-full rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+        </div>
+
+        <div class="col-span-full">
+          <label
+            for="summary"
+            class="block text-sm font-medium leading-6 text-gray-900"
+          >Resumo</label>
+          <div class="mt-2">
+            <textarea
+              id="summary"
+              name="summary"
+              value="{{summary}}"
+              rows="5"
+              class="block w-full rounded border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            ></textarea>
+          </div>
+      </div>
+      
+      <div class="col-span-full flex flex-col space-y-3">   
+          <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+          <div class="relative">
+              <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                  <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                  </svg>
+              </div>
+              <input type="search" id="default-search" oninput="onInputAuthorChanged()" class="border-0 ring-1 ring-inset block w-full p-4 ps-10 text-sm rounded" placeholder="Pesquisar mais algum autor..." />
+              <button onclick="onSearchAutor(event)" type="submit" class="text-base absolute end-2.5 bottom-2.5 bg-primary hover:bg-primary/50 font-medium rounded text-sm px-4 py-2 ">Search</button>
+          </div>
+          <div id="dropdown" class="hidden z-10 bg-white divide-y rounded-lg shadow col-span-full h-46 overflow-auto dark:bg-gray-700">
+            <ul id="dropdownOptions" class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton"></ul>
+         </div>
+         <div id="container-authors" class="col-span-full grid grid-cols-4 gap-4">
+         </div>
+      </div>
+
+    </div>
+
+  <div class="mt-6 flex items-center justify-end gap-x-6 content-end">
+    <button
+      type="button"
+      class="text-sm font-semibold leading-6 text-gray-900"
+    >Cancel</button>
+      {{> button text="Salvar"}}
+  </div>
+
+  </div>
+
+</form>
+
+<script>
+
+  function onInputAuthorChanged() {
+    document.getElementById("dropdown").classList.add("hidden");
+  }
+
+  async function onSearchAutor( event ) {
+
+    console.log( event )
+    event.preventDefault();
+    event.stopImmediatePropagation()
+    console.log("test")
+
+    const authorName = document.getElementById("default-search").value;
+
+    const response = await fetch(`http://localhost:8082/article/autor/${authorName}`)
+
+    const json = await response.json();
+
+    console.log(json)
+
+    onAddAuthorOptions( json )
+
+  }
+
+  function onRemoveAuthor( idElement ) {
+      document.getElementById(idElement).remove();
+  }
+
+  function onSelectAuthor( option ) {
+
+    document.getElementById("dropdown").classList.toggle("hidden");
+
+    var containerAuthors = document.getElementById("container-authors");
+
+    var input = `<div id="author-${option.id}" class="flex bg-white justify-center items-center border-secundaryHover border-b rounded h-10">
+      <input hidden name="authors" type="text" value=${option.id} readonly ></input>
+      <div class="flex justify-between items-center w-full p-3.5">
+         <label> ${option.text}</label>
+         <a class="cursor-pointer text-remove text-2xl" onclick="onRemoveAuthor('author-${option.id}')" > &times;</a>
+      </div>
+    </div>`
+
+    containerAuthors.innerHTML += input;
+
+  }
+
+  function onCreateAuthorOption( author ) {
+
+    const html = `
+    <option
+      href="#"
+      class="block px-4 py-2 hover:bg-base"
+      onclick="onSelectAuthor({
+        id: this.value,
+        text: this.text
+      })"
+      value=${author.id}
+    >${author.name}
+    </option>`
+
+    return html;
+  }
+
+  function onAddAuthorOptions( authors ) {
+
+      var dropdown = document.getElementById("dropdown");
+
+      if( authors.length === 0  ){
+        dropdown.classList.add("hidden");
+        return;
+      }
+
+      dropdown.classList.toggle("hidden");
+
+      const html = authors.map( ( current ) => {
+        return onCreateAuthorOption( current );
+      } ).join(" ");
+
+      var divConteudo = document.getElementById('dropdownOptions');
+
+      divConteudo.innerHTML = html;
+  }
+
+</script>
+

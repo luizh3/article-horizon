@@ -1,0 +1,27 @@
+<div>
+  <div class="flex justify-evenly items-center h-full">
+    <div class="flex flex-col content-center justify-center space-y-11 w-2/6">
+      <div class="text-5xl"> Sua Janela para o Conhecimento Científico!</div>
+      <span class="text-lg">Navegue por nossa extensa coleção de artigos
+        cuidadosamente selecionados, abrangendo uma ampla gama de disciplinas,
+        desde ciências naturais até ciências sociais, humanidades e muito mais.
+        Estamos comprometidos em oferecer conteúdo acadêmico de excelência,
+        garantindo que nossos leitores tenham acesso a informações precisas,
+        atualizadas e relevantes.
+
+      </span>
+      {{> button text="Começar" onClick="onStart()"}}
+    </div>
+    <img
+      class="h-96 w-auto shadow-md"
+      src="/images/designer.jpeg"
+      style="border-radius: 50%;"
+    />
+  </div>
+</div>
+
+<script>
+  function onStart() {
+    window.location.href='/login'
+  }
+</script>

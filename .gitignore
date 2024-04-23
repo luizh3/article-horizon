@@ -1,0 +1,11 @@
+# Dependências
+/node_modules
+
+# Arquivos de log
+/logs
+
+# Arquivos de ambiente
+.env
+
+# Arquivos de configuração específicos do sistema
+.DS_Store

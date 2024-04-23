@@ -1,0 +1,27 @@
+const express = require("express");
+const routes = require("./routes/Router");
+
+const { init: initHandlebars } = require("./config/handlebars");
+const { init: initSession } = require("./config/session");
+
+const { authentication } = require("./middlewares/AuthenticationMiddleware");
+const { properties } = require("./middlewares/PropertiesDefaultMiddleware");
+
+var app = express();
+
+initHandlebars(app);
+initSession(app);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+// app.use(authentication);
+app.use(properties);
+app.use(routes);
+
+app.use(express.static("public"));
+
+const PORT = 8082;
+
+app.listen(PORT, function () {
+  console.log(`Servidor no http://localhost:${PORT}`);
+});
