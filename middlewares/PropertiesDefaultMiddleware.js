@@ -47,12 +47,25 @@ function headerOptions(userType) {
   return [ArticleOption(userType), UserOption(userType)];
 }
 
+function userSession(session) {
+  const id = session?.user?.id;
+  const type = session?.user?.type;
+
+  return {
+    id,
+    isAdmin: UserTypeEnum.ADMIN === type,
+    isAuthor: UserTypeEnum.AUTOR === type,
+    isAppraise: UserTypeEnum.AVALIADOR === type,
+  };
+}
+
 module.exports = {
   properties: (req, res, next) => {
     const userType = req.session?.user?.type;
 
     res.locals = {
       headerOptions: headerOptions(userType),
+      userSession: userSession(req.session),
     };
 
     next();

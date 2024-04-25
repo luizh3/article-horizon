@@ -1,40 +1,74 @@
-<div class="flex flex-col space-y-5 w-2/4">
-  <h2 class="text-3xl font-medium">{{article.title}}</h2>
-  <h2 class="text-lg">{{article.summary}}</h2>
-  <h2 class="text-primary cursor-pointer font-medium">{{article.linkPdf}}</h2>
-  <div class="flex space-x-3 items-center">
-    {{> Badge description=article.status.description type=(statusArticleToTypeBadge article.status.type)}}
-    {{}}
-    <div>&#128197; {{article.created}}</div>
-  </div>
+<div class="flex flex-col space-y-5 w-3/5 space-x-3">
+  {{> AppraiserScoreModal id="container" href=view.appraiser.update.href appraiser=(sessionAppraiser article.appraisers )}}
+  {{#if ( or ( or userSession.isAdmin ( isEqual userSession.id article.idCreatorAuthor ) ( isInclude userSession.id ( idAppraisers article.appraisers ) ) ) ) }}
+    <div class="flex flex-end space-x-3 bg-slate200 p-3 rounded h-16">
+        {{#if ( or userSession.isAdmin ( isEqual userSession.id article.idCreatorAuthor ) )}}
+          {{> ButtonIcon description="Editar" icon="edit" class="bg-white text-primary" href=view.update.href}}
+          {{> ButtonIcon description="Deletar" icon="delete" class="bg-red100 text-red800" href=view.delete.href }}
+        {{/if}}
+        {{#if ( isInclude userSession.id ( idAppraisers article.appraisers ) ) }}
+          {{> ButtonIcon description="Notas" icon="edit" class="bg-white text-primary" onClick="onEditAvaliador()" }}
+        {{/if}}
+    </div>
+  {{/if}}
   <div class="flex flex-col space-y-5">
-    <label class="text-2xl font-medium">Autores</label>
-    <ul class="flex flex-col space-y-2">
-      <li class="font-medium">{{authorsToRaw article.authors}} </li>
-    </ul>
-  </div>
-  <div class="flex flex-col space-y-5">
-    <label class="text-2xl font-medium">Avaliadores</label>
-    <ul class="flex flex-col space-y-5">
-      {{#each article.appraisers}}
-        <li class="flex flex-col space-y-2">
-          <div class="flex flex-col">
-            <label class="text-lg font-medium">{{name}}</label>
-            <label>{{email}}</label>
-          </div>
-          <div>
-            {{#if rated}}
-              <div class="flex space-x-3">
-                {{> BadgetScore title="Relevancia" score=relevantScore }}
-                {{> BadgetScore title="Experiencia" score=experienceScore }}
-                {{> BadgetScore title="Nota final" score=(multiplication relevantScore experienceScore) }}
+    <h2 class="text-3xl font-medium">{{article.title}}</h2>
+    <h2 class="text-lg">{{article.summary}}</h2>
+    <h2 class="text-primary cursor-pointer font-medium">{{article.linkPdf}}</h2>
+    <div class="flex space-x-3 items-center">
+      {{> Badge description=article.status.description type=(statusArticleToTypeBadge article.status.type)}}
+      {{#if article.totalScore }}
+        {{> BadgetScore title="Nota final" score=article.totalScore }}
+      {{else}}
+        {{> Badge description="Não avaliado" type="warning" }}
+      {{/if}}
+      <div>&#128197; {{article.created}}</div>
+    </div>
+    <div class="flex flex-col space-y-5">
+      <label class="text-2xl font-medium">Autores</label>
+      <ul class="flex flex-col space-y-2">
+        <li class="font-medium">{{authorsToRaw article.authors}} </li>
+      </ul>
+    </div>
+    <div class="flex flex-col space-y-5">
+      <label class="text-2xl font-medium">Avaliadores</label>
+      <ul class="flex flex-col space-y-5">
+        {{#if ( isEmpty article.appraisers)}}
+          {{> Badge description="Nenhum avaliador relacionado" type="warning" }}
+        {{else}}
+          {{#each article.appraisers}}
+            <li class="flex flex-col space-y-2">
+              <div class="flex flex-col">
+                <label class="text-lg font-medium">{{name}}</label>
+                <label>{{email}}</label>
               </div>
-            {{else}}
-                {{> Badge description="Não avaliado" type="warning" }}
-            {{/if}}
-          </div>
-        </li>
-      {{/each}}
-    </ul>
+              <div>
+                {{#if rated}}
+                  <div class="flex space-x-3">
+                    {{> BadgetScore title="Relevancia" score=relevantScore }}
+                    {{> BadgetScore title="Experiencia" score=experienceScore }}
+                    {{> BadgetScore title="Nota final" score=(multiplication relevantScore experienceScore) }}
+                  </div>
+                {{else}}
+                    {{> Badge description="Não avaliado" type="warning" }}
+                {{/if}}
+              </div>
+            </li>
+          {{/each}}
+        {{/if}}
+      </ul>
+    </div>
   </div>
 </div>
+
+<script>
+  function onDelete(id){
+    console.log( id )
+    window.location.href = `window.location.href=${id}`
+  }
+
+  function onEditAvaliador() {
+    console.log("test")
+    document.getElementById("container").classList.toggle("hidden")
+  }
+</script>

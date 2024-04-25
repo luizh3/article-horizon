@@ -25,6 +25,10 @@ module.exports = {
         type: Sequelize.DECIMAL(4, 2),
         defaultValue: 0.0,
       },
+      nr_final_score: {
+        type: Sequelize.DECIMAL(5, 2),
+        defaultValue: 0.0,
+      },
       fg_rated: {
         type: Sequelize.BOOLEAN,
         defaultValue: false,

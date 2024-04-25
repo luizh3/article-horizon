@@ -1,0 +1,106 @@
+<div class="col-span-full flex flex-col space-y-3">   
+    <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+    <div class="relative">
+        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+            </svg>
+        </div>
+        <input type="search" id="default-search" oninput="onInputChanged()" class="border-0 ring-1 ring-inset block w-full p-4 ps-10 text-sm rounded" placeholder="{{placeHolder}}" />
+        <button onclick="onSearch(event)" type="submit" class="text-base absolute end-2.5 bottom-2.5 bg-primary hover:bg-primary/50 font-medium rounded text-sm px-4 py-2 ">Search</button>
+    </div>
+    <div id="dropdown" class="hidden z-10 bg-white divide-y rounded-lg shadow col-span-full h-46 overflow-auto dark:bg-gray-700">
+      <ul id="dropdownOptions" class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton"></ul>
+    </div>
+    <div id="container-selecteds" class="col-span-full grid grid-cols-4 gap-4">
+      {{#each selecteds}}
+        {{> BadgetClose id=id name=name }}
+      {{/each}}
+    </div>
+</div>
+<script>
+
+  function onInputChanged() {
+    document.getElementById("dropdown").classList.add("hidden");
+  }
+
+  async function onSearch( event ) {
+
+    event.preventDefault();
+    event.stopImmediatePropagation()
+
+    var hrefTemplate = Handlebars.compile(`{{href}}`)
+
+    const href = hrefTemplate({})
+
+    const search = document.getElementById("default-search").value;
+
+    const response = await fetch(`${href}${search}`)
+
+    const json = await response.json();
+
+    console.log(json)
+
+    onAddOptions( json )
+
+  }
+
+  function onRemove( idElement ) {
+      document.getElementById(idElement).remove();
+  }
+
+  function onSelect( option ) {
+
+    document.getElementById("dropdown").classList.toggle("hidden");
+
+    var containerSelecteds = document.getElementById("container-selecteds");
+
+    var badgetCloseTemplate = Handlebars.compile(`{{> BadgetCloseTemplate}}`)
+
+    const badgetClose = badgetCloseTemplate({
+       id: option.id,
+       name: option.text
+    })
+
+    containerSelecteds.innerHTML += badgetClose;
+
+  }
+
+  function onCreateOption( option ) {
+
+    const html = `
+    <option
+      href="#"
+      class="block px-4 py-2 hover:bg-base"
+      onclick="onSelect({
+        id: this.value,
+        text: this.text
+      })"
+      value=${option.id}
+    >${option.name}
+    </option>`
+
+    return html;
+  }
+
+  function onAddOptions( options ) {
+
+      var dropdown = document.getElementById("dropdown");
+
+      if( options.length === 0  ){
+        dropdown.classList.add("hidden");
+        return;
+      }
+
+      dropdown.classList.toggle("hidden");
+
+      const html = options.map( ( current ) => {
+        return onCreateOption( current );
+      } ).join(" ");
+
+      var divConteudo = document.getElementById('dropdownOptions');
+
+      divConteudo.innerHTML = html;
+  }
+
+</script>

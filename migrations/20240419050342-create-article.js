@@ -1,4 +1,7 @@
 "use strict";
+
+const ArticleStatusEnum = require("../enums/ArticleStatusEnum");
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -24,6 +27,16 @@ module.exports = {
       tp_status: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        defaultValue: ArticleStatusEnum.PENDENTE,
+      },
+      nr_score: {
+        type: Sequelize.DECIMAL(4, 2),
+        defaultValue: 0.0,
+      },
+      id_creator_author: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: null,
       },
       dh_created: {
         allowNull: false,

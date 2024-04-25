@@ -1,13 +1,20 @@
-function statusToString(type) {
-  const options = {
-    1: "Revisão",
-    2: "Aceito",
-    3: "Rejeitado",
-  };
+const ArticleStatusEnum = require("../enums/ArticleStatusEnum");
 
-  return options[type] ?? "Não informado";
+function statusArticleToTypeBadge(status) {
+  switch (status) {
+    case ArticleStatusEnum.PENDENTE:
+    case ArticleStatusEnum.REVISAO: {
+      return "warning";
+    }
+    case ArticleStatusEnum.UNKNOW:
+    case ArticleStatusEnum.REJEITADO: {
+      return "invalid";
+    }
+    default:
+      return "";
+  }
 }
 
 module.exports = {
-  statusToString,
+  statusArticleToTypeBadge,
 };

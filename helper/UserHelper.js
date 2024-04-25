@@ -1,28 +1,20 @@
-function enumToString(type) {
-  const options = {
-    1: "Administrador",
-    2: "Autor",
-    3: "Avaliador",
-  };
-
-  return options[type] ?? "Desconhecido";
-}
+const UserTypeEnum = require("../enums/UserTypeEnum");
 
 function userTypes() {
   return [
     {
-      id: 1,
-      description: "Administrador",
+      id: UserTypeEnum.ADMIN,
+      description: UserTypeEnum.toString(UserTypeEnum.ADMIN),
       selected: false,
     },
     {
-      id: 2,
-      description: "Autor",
+      id: UserTypeEnum.AUTOR,
+      description: UserTypeEnum.toString(UserTypeEnum.AUTOR),
       selected: false,
     },
     {
-      id: 3,
-      description: "Avaliador",
+      id: UserTypeEnum.AVALIADOR,
+      description: UserTypeEnum.toString(UserTypeEnum.AVALIADOR),
       selected: false,
     },
   ];
@@ -38,7 +30,6 @@ function userTypesSelected(idType) {
 }
 
 module.exports = {
-  enumToString,
   userTypes,
   userTypesSelected,
 };

@@ -1,5 +1,6 @@
 const express = require("express");
 const routes = require("./routes/Router");
+const path = require("path");
 
 const { init: initHandlebars } = require("./config/handlebars");
 const { init: initSession } = require("./config/session");
@@ -18,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(properties);
 app.use(routes);
 
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 const PORT = 8082;
 

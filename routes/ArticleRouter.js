@@ -1,20 +1,31 @@
 const express = require("express");
 const router = express.Router();
 
-const { User, ArticleAuthor, Article } = require("../models");
-const { Op } = require("sequelize");
+const { ArticleAuthor, Article } = require("../models");
 
 const UserTypeEnum = require("../enums/UserTypeEnum");
-const DateHelper = require("../helper/DateHelper");
 const AuthenticationMiddleware = require("../middlewares/AuthenticationMiddleware");
 const ArticleController = require("../controllers/ArticleController");
-const ArticleStatusEnum = require("../enums/ArticleStatusEnum");
+const ArticleFilters = require("../helper/filters/view/ArticleFilters");
+const ArticleSequelizeFilter = require("../helper/filters/sequelize/ArticleSequelizeFilter");
+const UserController = require("../controllers/UserController");
+const ArticleHelper = require("../helper/ArticleHelper");
+const ArticleAuthorController = require("../controllers/ArticleAuthorController");
 
 router.get(
   "/create",
   AuthenticationMiddleware.checkRole([UserTypeEnum.AUTOR]),
   (req, res) => {
-    res.render("pages/article/create");
+    res.render("pages/article/create", {
+      view: {
+        title: "Criar artigo",
+        description:
+          "Esta informação será exibido publicamente, então tome cuidado com o que você compartilha.",
+        form: {
+          action: `/article/create`,
+        },
+      },
+    });
   }
 );
 
@@ -24,17 +35,18 @@ router.post(
   async (req, res) => {
     var { title, linkPdf, summary, authors } = req.body;
 
+    const idUserSession = req.session.user.id;
+
     const articleCreated = await Article.create({
       ds_title: title,
       ds_summary: summary,
       link_pdf: linkPdf,
-      tp_status: 0,
       dh_created: new Date(),
+      id_creator_author: idUserSession,
     });
 
     if (Array.isArray(authors)) {
-      console.log(req.session);
-      authors.push(req.session.user.id);
+      authors.push(idUserSession);
     } else {
       authors =
         authors !== undefined
@@ -57,8 +69,26 @@ router.post(
 
 router.get("/view/:id", async (req, res) => {
   const article = await ArticleController.findById(req.params.id);
+
+  const idUserSession = req.session.user.id;
+
   res.render("pages/article/information", {
     article,
+    view: {
+      delete: {
+        href: `/article/delete/${article.id}`,
+      },
+      update: {
+        href: res.locals.userSession.isAdmin
+          ? `/appraiser/create/${article.id}`
+          : `/article/update/${article.id}`,
+      },
+      appraiser: {
+        update: {
+          href: `/appraiser/score/${article.id}`,
+        },
+      },
+    },
     helpers: {
       authorsToRaw(list) {
         return list
@@ -68,18 +98,19 @@ router.get("/view/:id", async (req, res) => {
           .join(", ");
       },
     },
-    statusArticleToTypeBadge(status) {
-      switch (status) {
-        case ArticleStatusEnum.REVISAO: {
-          return "warning";
-        }
-        case ArticleStatusEnum.UNKNOW:
-        case ArticleStatusEnum.REJEITADO: {
-          return "invalid";
-        }
-        default:
-          return "";
-      }
+    statusArticleToTypeBadge: (status) => {
+      return ArticleHelper.statusArticleToTypeBadge(status);
+    },
+    idAppraisers: (appraisers) => {
+      return appraisers.map((current) => current.idAppraiser);
+    },
+    sessionAppraiser: (appraisers) => {
+      console.log(appraisers);
+      const appraiser = appraisers.filter(
+        (current) => current.idAppraiser === idUserSession
+      )[0];
+
+      return appraiser;
     },
   });
 });
@@ -91,6 +122,8 @@ router.get(
     true
   ),
   async (req, res) => {
+    console.log(`ID: ${req.params.id}`);
+
     await Article.destroy({
       where: {
         id_article: req.params.id,
@@ -105,54 +138,107 @@ router.get(
   "/list",
   AuthenticationMiddleware.isAuthenticated(),
   async (req, res) => {
-    const articles = await Article.findAll()
-      .then((articles) => {
-        return articles.map((current) => {
-          const data = current.dataValues;
-          return {
-            id: data.id_article,
-            title: data.ds_title,
-            summary: data.ds_summary,
-            created: DateHelper.format(data.dh_created),
-          };
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    const { search, typeScoreFilter } = req.query;
+
+    const articles = await ArticleController.findAll(
+      ArticleSequelizeFilter.searchOrderScore(search, typeScoreFilter)
+    );
 
     res.render("pages/article/list", {
       articles: articles,
+      isAdmin: true,
+      filters: {
+        score: ArticleFilters.scoreOrder(),
+      },
+      helpers: {
+        statusArticleToTypeBadge: (status) => {
+          return ArticleHelper.statusArticleToTypeBadge(status);
+        },
+      },
     });
   }
 );
 
 router.get(
-  "/autor/:name",
+  "/autor/:name?",
   AuthenticationMiddleware.checkRole([UserTypeEnum.AUTOR], true),
   async (req, res) => {
-    const authors = await User.findAll({
-      attributes: ["ds_name", "id_user"],
-      where: {
-        tp_user: UserTypeEnum.AUTOR,
-        ds_name: {
-          [Op.like]: `%${req.params.name}%`,
-        },
-      },
-    })
-      .then((users) => {
-        return users
-          .map((current) => {
-            return { id: current.id_user, name: current.ds_name };
-          })
-          .filter((current) => current.id !== req.session.user.id);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    const { name } = req.params;
+    const idCurrentUser = req.session.user.id;
+
+    const hasName = name !== undefined && name !== "";
+
+    var authors = {};
+
+    if (hasName) {
+      authors = (
+        await UserController.findByNameAndType(name, UserTypeEnum.AUTOR)
+      ).filter((current) => current.id !== idCurrentUser);
+    } else {
+      authors = (
+        await UserController.findAll({
+          where: { tp_user: UserTypeEnum.AUTOR },
+        })
+      )
+        .filter((current) => current.id !== idCurrentUser)
+        .map((current) => {
+          return { id: current.id, name: current.name };
+        });
+    }
 
     res.json(authors);
   }
 );
+
+router.get("/update/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const article = await ArticleController.findById(id);
+
+  res.render("pages/article/create", {
+    article,
+    view: {
+      title: "Editar artigo",
+      description:
+        "Esta informação será exibido publicamente, então tome cuidado com o que você compartilha.",
+      form: {
+        action: `/article/update/${id}`,
+      },
+    },
+  });
+});
+
+router.post("/update/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const user = req.body;
+  var authors = user.authors;
+
+  ArticleController.updateById({
+    ...user,
+    id,
+  });
+
+  await ArticleAuthor.destroy({
+    where: {
+      id_article: id,
+    },
+  });
+
+  if (!Array.isArray(authors)) {
+    authors = [authors];
+  }
+
+  await ArticleAuthor.bulkCreate(
+    authors.map((idAuthor) => {
+      return {
+        id_article: id,
+        id_author: idAuthor,
+      };
+    })
+  );
+
+  res.redirect("/article/list");
+});
 
 module.exports = router;

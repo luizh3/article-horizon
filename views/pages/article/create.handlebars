@@ -1,8 +1,7 @@
-<form class="flex flex-col w-2/4 " action="/article/create" method="POST">
+<form class="flex flex-col w-2/4 " action="{{view.form.action}}" method="POST">
 
-      <h2 class="font-semibold leading-7">Criar artigo</h2>
-      <p class="mt-1 text-sm leading-6 text-gray-600 ">Esta informação será
-        exibido publicamente, então tome cuidado com o que você compartilha.</p>
+      <h2 class="font-semibold leading-7">{{view.title}}</h2>
+      <p class="mt-1 text-sm leading-6 text-gray-600 ">{{view.description}}</p>
 
       <div class="flex flex-col justify-between bg-base basis-full">
 
@@ -18,7 +17,7 @@
               id="title"
               type="text"
               name="title"
-              value="{{title}}"
+              value="{{article.title}}"
               class="block w-full rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
           </div>
@@ -34,7 +33,7 @@
               id="linkPdf"
               type="text"
               name="linkPdf"
-              value="{{linkPdf}}"
+              value="{{article.linkPdf}}"
               class="block w-full rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
           </div>
@@ -49,10 +48,9 @@
             <textarea
               id="summary"
               name="summary"
-              value="{{summary}}"
               rows="5"
               class="block w-full rounded border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            ></textarea>
+            >{{article.summary}}</textarea>
           </div>
       </div>
       
@@ -71,6 +69,15 @@
             <ul id="dropdownOptions" class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton"></ul>
          </div>
          <div id="container-authors" class="col-span-full grid grid-cols-4 gap-4">
+          {{#each article.authors}}
+            <div id="author-{{id}}" class="flex bg-white justify-center items-center border-secundaryHover border-b rounded h-10">
+              <input hidden name="authors" type="text" value="{{id}}" readonly ></input>
+              <div class="flex justify-between items-center w-full p-3.5">
+                <label>{{name}}</label>
+                <a class="cursor-pointer text-remove text-2xl" onclick="onRemoveAuthor('author-{{id}}')" > &times;</a>
+              </div>
+            </div>
+          {{/each}}
          </div>
       </div>
 
@@ -123,6 +130,7 @@
 
     var containerAuthors = document.getElementById("container-authors");
 
+    // TODO estudar alguma maneira de alterar isso, codigo esta duplicado
     var input = `<div id="author-${option.id}" class="flex bg-white justify-center items-center border-secundaryHover border-b rounded h-10">
       <input hidden name="authors" type="text" value=${option.id} readonly ></input>
       <div class="flex justify-between items-center w-full p-3.5">

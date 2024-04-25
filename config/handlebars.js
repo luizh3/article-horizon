@@ -20,6 +20,15 @@ exports.init = function (app) {
         multiplication: function (first, second) {
           return (parseFloat(first) * parseFloat(second)).toFixed(2);
         },
+        isEmpty: function (array) {
+          return array.length === 0;
+        },
+        or: function (first, second) {
+          return first || second;
+        },
+        isInclude: function (value, array) {
+          return array.includes(value);
+        },
       },
     })
   );

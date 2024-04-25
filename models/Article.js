@@ -1,5 +1,8 @@
 "use strict";
+
 const { Model } = require("sequelize");
+const ArticleStatusEnum = require("../enums/ArticleStatusEnum");
+
 module.exports = (sequelize, DataTypes) => {
   class Article extends Model {
     /**
@@ -34,6 +37,16 @@ module.exports = (sequelize, DataTypes) => {
       tp_status: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        defaultValue: ArticleStatusEnum.PENDENTE,
+      },
+      nr_score: {
+        type: DataTypes.DECIMAL(4, 2),
+        defaultValue: 0.0,
+      },
+      id_creator_author: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: null,
       },
       dh_created: {
         allowNull: false,

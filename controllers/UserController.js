@@ -3,6 +3,7 @@ const { User } = require("../models");
 const { use } = require("../routes/ArticleRouter");
 
 const UserHelper = require("../helper/UserHelper");
+const UserTypeEnum = require("../enums/UserTypeEnum");
 
 async function hasUserRegister(user) {
   return await User.findOne({
@@ -32,15 +33,15 @@ async function insert(user) {
   });
 }
 
-async function findAll() {
-  return await User.findAll()
+async function findAll(filters = {}) {
+  return await User.findAll(filters)
     .then((users) => {
       return users.map((current) => {
         return {
           id: current.id_user,
           name: current.ds_name,
           email: current.ds_email,
-          type: UserHelper.enumToString(current.tp_user),
+          type: UserTypeEnum.toString(current.tp_user),
         };
       });
     })
@@ -89,6 +90,26 @@ async function updateById(user) {
   );
 }
 
+async function findByNameAndType(dsName, typeUser) {
+  return await User.findAll({
+    attributes: ["ds_name", "id_user"],
+    where: {
+      tp_user: typeUser,
+      ds_name: {
+        [Op.like]: `%${dsName}%`,
+      },
+    },
+  })
+    .then((users) => {
+      return users.map((current) => {
+        return { id: current.id_user, name: current.ds_name };
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+
 module.exports = {
   hasUserRegister,
   insert,
@@ -96,4 +117,5 @@ module.exports = {
   removeById,
   findById,
   updateById,
+  findByNameAndType,
 };

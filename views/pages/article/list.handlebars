@@ -1,20 +1,41 @@
-<ul class="flex flex-col space-y-4 w-2/4 h-full">
-  {{#each articles}}
-    <li
-      onclick="window.location.href='/article/view/{{id}}'"
-      class="flex col-span-full cursor-pointer p-5 h-32 rounded shadow-md hover:bg-secundary bg-white items-center justify-between"
-    >
-      <div class="flex flex-col col-span-full space-y-4 justify-center">
-        <div class="text-2xl">{{title}}</div>
-        <div
-          class="text-sm line-clamp-4 h-6 text-wrap truncate"
-        >{{summary}}</div>
-        <div class="text-sm line-clamp-4">&#128197; {{created}}</div>
-      </div>
-      <a
-        class="cursor-pointer text-remove"
-        href="/article/delete/{{id}}"
-      >Remover</a>
-    </li>
-  {{/each}}
-</ul>
+<div class="flex flex-col space-y-4 w-2/4 h-full">
+  <div>
+      <form action="/article/list" method="GET">
+          {{> SearchField placeHolder="Buscar por nome..."}}
+          <div class="flex items-end space-x-3">
+            {{> select options=filters.score.options description="Função do usuario" class="grow" name="typeScoreFilter"}}
+            {{> button text="Buscar" }}
+          </div>
+      </form>
+  </div>
+  <ul class="flex flex-col space-y-4">
+    {{#each articles}}
+      <li
+        onclick="window.location.href='/article/view/{{id}}'"
+        class="flex col-span-full cursor-pointer p-5 h-42 rounded shadow-md hover:bg-slate200 bg-white items-center justify-between"
+      >
+        <div class="flex flex-col col-span-full space-y-4 justify-center">
+          <div class="text-2xl">{{title}}</div>
+          <div
+            class="text-sm line-clamp-4 h-6 text-wrap truncate"
+          >{{summary}}</div>
+            <div class="flex space-x-3 items-center">
+              {{> Badge description=status.description type=(statusArticleToTypeBadge status.type)}}
+              {{#if totalScore }}
+                {{> BadgetScore title="Nota final" score=totalScore }}
+              {{else}}
+                {{> Badge description="Não avaliado" type="warning" }}
+              {{/if}}
+              <div class="text-sm line-clamp-4">&#128197; {{created}}</div>
+            </div>
+        </div>
+        {{#if ( or ../userSession.isAdmin ( isEqual ../userSession.id .idCreatorAuthor ) ) }}
+          <a
+            class="cursor-pointer text-remove"
+            href="/article/delete/{{id}}"
+          >Remover</a>
+        {{/if}}
+      </li>
+    {{/each}}
+  </ul>
+</div>

@@ -25,6 +25,8 @@ module.exports = {
 
       green100: "rgb(var(--color-green-100) / <alpha-value>)",
       green800: "rgb(var(--color-green-800) / <alpha-value>)",
+
+      slate200: "rgb(var(--color-slate-200) / <alpha-value>)",
     },
   },
   plugins: [require("@tailwindcss/forms")],

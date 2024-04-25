@@ -5,6 +5,7 @@ const UserController = require("../controllers/UserController");
 const UserHelper = require("../helper/UserHelper");
 const AuthenticationMiddleware = require("../middlewares/AuthenticationMiddleware");
 const UserTypeEnum = require("../enums/UserTypeEnum");
+const UserSequelizeFilter = require("../helper/filters/sequelize/UserSequelizeFilter");
 
 router.get(
   "/create",
@@ -101,9 +102,20 @@ router.get(
   "/list",
   AuthenticationMiddleware.checkRole([UserTypeEnum.ADMIN]),
   async (req, res) => {
-    const users = await UserController.findAll();
+    const { search, typeUser } = req.query;
+
+    console.log(req.query);
+
+    const users = await UserController.findAll(
+      UserSequelizeFilter.searchNameAndUserType(search, typeUser)
+    );
     res.render("pages/user/list", {
       users,
+      filters: {
+        user: {
+          types: UserHelper.userTypes(),
+        },
+      },
     });
   }
 );

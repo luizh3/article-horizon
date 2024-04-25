@@ -14,6 +14,7 @@ async function findAllByIdArticle(id) {
           rated: appraiser.fg_rated,
           relevantScore: appraiser.nr_relevant_score,
           experienceScore: appraiser.nr_experience_score,
+          finalScore: appraiser.nr_final_score,
           name: appraiser.User.ds_name,
           email: appraiser.User.ds_email,
         };
