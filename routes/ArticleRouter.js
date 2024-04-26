@@ -10,32 +10,91 @@ const ArticleFilters = require("../helper/filters/view/ArticleFilters");
 const ArticleSequelizeFilter = require("../helper/filters/sequelize/ArticleSequelizeFilter");
 const UserController = require("../controllers/UserController");
 const ArticleHelper = require("../helper/ArticleHelper");
-const ArticleAuthorController = require("../controllers/ArticleAuthorController");
+const ArticleStatusEnum = require("../enums/ArticleStatusEnum");
+const RegexHelper = require("../helper/RegexHelper");
+
+function viewCreateProperties() {
+  return {
+    view: {
+      title: "Criar artigo",
+      description:
+        "Esta informação será exibido publicamente, então tome cuidado com o que você compartilha.",
+      form: {
+        action: `/article/create`,
+      },
+    },
+  };
+}
 
 router.get(
   "/create",
   AuthenticationMiddleware.checkRole([UserTypeEnum.AUTOR]),
   (req, res) => {
-    res.render("pages/article/create", {
-      view: {
-        title: "Criar artigo",
-        description:
-          "Esta informação será exibido publicamente, então tome cuidado com o que você compartilha.",
-        form: {
-          action: `/article/create`,
-        },
-      },
-    });
+    res.render("pages/article/create", viewCreateProperties());
   }
 );
+
+async function isValidLimitAuthors(
+  idAuthors,
+  idUserSession,
+  response,
+  article
+) {
+  const nrMaxAuthorsArticle = 5;
+
+  if (!(idAuthors.length >= nrMaxAuthorsArticle)) {
+    return true;
+  }
+
+  const authors = (
+    await UserController.findAll({
+      where: {
+        id_user: idAuthors.filter((idAuthor) => idAuthor !== idUserSession),
+      },
+    })
+  ).map((author) => {
+    return { id: author.id, name: author.name };
+  });
+
+  response.render("pages/article/create", {
+    ...viewCreateProperties(),
+    article: { ...article, authors },
+    errors: {
+      author: {
+        text: `O limite de autor por arigo é ${nrMaxAuthorsArticle} contando você`,
+      },
+    },
+  });
+
+  return false;
+}
 
 router.post(
   "/create",
   AuthenticationMiddleware.checkRole([UserTypeEnum.AUTOR], true),
   async (req, res) => {
-    var { title, linkPdf, summary, authors } = req.body;
+    var { title, linkPdf, summary, authors: idAuthors } = req.body;
 
     const idUserSession = req.session.user.id;
+
+    if (Array.isArray(idAuthors)) {
+      idAuthors.push(idUserSession);
+    } else {
+      idAuthors =
+        idAuthors !== undefined
+          ? [idAuthors, toString(req.session.user.id)]
+          : [toString(req.session.user.id)];
+    }
+
+    const article = {
+      title,
+      linkPdf,
+      summary,
+    };
+
+    if (!isValidLimitAuthors(idAuthors, idUserSession, res, article)) {
+      return;
+    }
 
     const articleCreated = await Article.create({
       ds_title: title,
@@ -45,16 +104,7 @@ router.post(
       id_creator_author: idUserSession,
     });
 
-    if (Array.isArray(authors)) {
-      authors.push(idUserSession);
-    } else {
-      authors =
-        authors !== undefined
-          ? [authors, req.session.user.id]
-          : [req.session.user.id];
-    }
-
-    const authorsInsert = authors.map((idAuthor) => {
+    const authorsInsert = idAuthors.map((idAuthor) => {
       return {
         id_article: articleCreated.id_article,
         id_author: idAuthor,
@@ -67,53 +117,75 @@ router.post(
   }
 );
 
-router.get("/view/:id", async (req, res) => {
-  const article = await ArticleController.findById(req.params.id);
+router.get(
+  "/view/:id",
+  AuthenticationMiddleware.isAuthenticated(),
+  async (req, res) => {
+    const article = await ArticleController.findById(req.params.id);
 
-  const idUserSession = req.session.user.id;
+    const idUserSession = req.session.user.id;
 
-  res.render("pages/article/information", {
-    article,
-    view: {
-      delete: {
-        href: `/article/delete/${article.id}`,
-      },
-      update: {
-        href: res.locals.userSession.isAdmin
-          ? `/appraiser/create/${article.id}`
-          : `/article/update/${article.id}`,
-      },
-      appraiser: {
-        update: {
-          href: `/appraiser/score/${article.id}`,
+    const isArticleRated =
+      article.appraisers.length > 0 &&
+      article.appraisers.every((appraiser) => appraiser.rated);
+
+    const appraiserSession = article.appraisers.filter(
+      (current) => current.idAppraiser === idUserSession
+    )[0];
+
+    res.render("pages/article/information", {
+      article,
+      view: {
+        buttons: {
+          delete: {
+            href: `/article/delete/${article.id}`,
+          },
+          update: {
+            href: res.locals.userSession.isAdmin
+              ? `/appraiser/create/${article.id}`
+              : `/article/update/${article.id}`,
+          },
+          accepted: {
+            href: `/article/status?idArticle=${article.id}&tpStatus=${ArticleStatusEnum.ACEITO}`,
+          },
+          reject: {
+            href: `/article/status?idArticle=${article.id}&tpStatus=${ArticleStatusEnum.REJEITADO}`,
+          },
+        },
+        inputs: {
+          score: {
+            regex: RegexHelper.only.number.range.decimal(10),
+          },
+        },
+        article: {
+          isOpen: !ArticleHelper.isFinished(article.status.type),
+        },
+        appraiser: {
+          isArticleNotRated: !isArticleRated,
+          session: appraiserSession,
+          update: {
+            href: `/appraiser/score/${article.id}`,
+          },
         },
       },
-    },
-    helpers: {
-      authorsToRaw(list) {
-        return list
-          .map((current) => {
-            return current.name;
-          })
-          .join(", ");
+      helpers: {
+        authorsToRaw(list) {
+          return list
+            .map((current) => {
+              return current.name;
+            })
+            .join(", ");
+        },
       },
-    },
-    statusArticleToTypeBadge: (status) => {
-      return ArticleHelper.statusArticleToTypeBadge(status);
-    },
-    idAppraisers: (appraisers) => {
-      return appraisers.map((current) => current.idAppraiser);
-    },
-    sessionAppraiser: (appraisers) => {
-      console.log(appraisers);
-      const appraiser = appraisers.filter(
-        (current) => current.idAppraiser === idUserSession
-      )[0];
-
-      return appraiser;
-    },
-  });
-});
+      statusArticleToTypeBadge: (status) => {
+        return ArticleHelper.statusArticleToTypeBadge(status);
+      },
+      idAppraisers: (appraisers) => {
+        return appraisers.map((appraiser) => appraiser.idAppraiser);
+      },
+    });
+  }
+);
 
 router.get(
   "/delete/:id",
@@ -190,55 +262,118 @@ router.get(
   }
 );
 
-router.get("/update/:id", async (req, res) => {
-  const { id } = req.params;
+router.get(
+  "/update/:id",
+  AuthenticationMiddleware.checkRole([UserTypeEnum.AUTOR]),
+  async (req, res) => {
+    const { id } = req.params;
 
-  const article = await ArticleController.findById(id);
+    const idCurrentUser = req.session.user.id;
 
-  res.render("pages/article/create", {
-    article,
-    view: {
-      title: "Editar artigo",
-      description:
-        "Esta informação será exibido publicamente, então tome cuidado com o que você compartilha.",
-      form: {
-        action: `/article/update/${id}`,
+    var article = await ArticleController.findById(id);
+
+    article = {
+      ...article,
+      authors: article.authors.filter(
+        (current) => current.id !== idCurrentUser
+      ),
+    };
+
+    res.render("pages/article/create", {
+      article,
+      view: {
+        title: "Editar artigo",
+        description:
+          "Esta informação será exibido publicamente, então tome cuidado com o que você compartilha.",
+        form: {
+          action: `/article/update/${id}`,
+        },
       },
-    },
-  });
-});
-
-router.post("/update/:id", async (req, res) => {
-  const { id } = req.params;
-
-  const user = req.body;
-  var authors = user.authors;
-
-  ArticleController.updateById({
-    ...user,
-    id,
-  });
-
-  await ArticleAuthor.destroy({
-    where: {
-      id_article: id,
-    },
-  });
-
-  if (!Array.isArray(authors)) {
-    authors = [authors];
+    });
   }
+);
 
-  await ArticleAuthor.bulkCreate(
-    authors.map((idAuthor) => {
-      return {
-        id_article: id,
-        id_author: idAuthor,
-      };
-    })
-  );
+router.post(
+  "/update/:idArticle",
+  AuthenticationMiddleware.checkRole([UserTypeEnum.AUTOR], true),
+  async (req, res) => {
+    const { idArticle } = req.params;
 
-  res.redirect("/article/list");
-});
+    console.log(`Id Artigo ${idArticle}`);
+
+    const article = req.body;
+    const idUserSession = req.session.user.id;
+    var idAuthors = article.authors;
+
+    if (!Array.isArray(idAuthors)) {
+      idAuthors = [idAuthors];
+    }
+
+    const idCreatorAuthor = await Article.findByPk(idArticle).then(
+      (articleDatabase) => {
+        return articleDatabase
+          ? articleDatabase.dataValues.id_creator_author
+          : 0;
+      }
+    );
+
+    const idAuthorsWithCreator = [...idAuthors, idCreatorAuthor];
+
+    console.log(idAuthorsWithCreator);
+
+    if (
+      isValidLimitAuthors(idAuthorsWithCreator, idUserSession, res, article)
+    ) {
+      console.log("return 1312312312");
+      return;
+    }
+
+    ArticleController.updateById({
+      ...article,
+      idArticle,
+    });
+
+    await ArticleAuthor.destroy({
+      where: {
+        id_article: idArticle,
+        id_author: idAuthors,
+      },
+    });
+
+    await ArticleAuthor.bulkCreate(
+      idAuthors.map((idAuthor) => {
+        return {
+          id_article: idArticle,
+          id_author: idAuthor,
+        };
+      })
+    );
+
+    res.redirect("/article/list");
+  }
+);
+
+router.post(
+  "/status",
+  AuthenticationMiddleware.checkRole([UserTypeEnum.ADMIN], true),
+  async (req, res) => {
+    const { idArticle, tpStatus } = req.query;
+
+    console.log(idArticle, tpStatus);
+
+    await Article.update(
+      {
+        tp_status: tpStatus,
+      },
+      {
+        where: {
+          id_article: idArticle,
+        },
+      }
+    );
+
+    res.redirect(`/article/view/${idArticle}`);
+  }
+);
 
 module.exports = router;

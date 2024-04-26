@@ -23,6 +23,24 @@ async function findAllByIdArticle(id) {
     .catch((error) => console.error(error));
 }
 
+async function nrScoreByIdArticle(idArticle) {
+  const appraisers = await findAllByIdArticle(idArticle);
+
+  console.log("test");
+  console.log(appraisers);
+
+  if (appraisers.length === 0) {
+    return 0.0;
+  }
+
+  return (
+    appraisers.reduce((sum, appraiser) => {
+      return sum + parseFloat(appraiser.finalScore);
+    }, 0.0) / appraisers.length
+  );
+}
+
 module.exports = {
   findAllByIdArticle,
+  nrScoreByIdArticle,
 };

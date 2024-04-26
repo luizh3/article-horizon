@@ -1,7 +1,7 @@
 const { ArticleAuthor, User } = require("../models");
 
 async function findAllByIdArticle(idArticle) {
-  return await ArticleAuthor.findAll({
+  return await findAll({
     attributes: ["id_author"],
     include: {
       model: User,
@@ -10,7 +10,11 @@ async function findAllByIdArticle(idArticle) {
     where: {
       id_article: idArticle,
     },
-  })
+  });
+}
+
+async function findAll(filters = {}) {
+  return await ArticleAuthor.findAll(filters)
     .then((values) => {
       return values.map((current) => {
         return {

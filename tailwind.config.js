@@ -14,6 +14,7 @@ module.exports = {
       primary: "rgb(var(--color-primary) / <alpha-value>)",
       secundary: "rgb(var(--color-secundary) / <alpha-value>)",
       secundaryHover: "rgb(var(--color-secundary-hover) / <alpha-value>)",
+      black: "rgb(var(--color-black) / <alpha-value>)",
       white: "rgb(var(--color-white) / <alpha-value>)",
       remove: "rgb(var(--color-remove) / <alpha-value>)",
 

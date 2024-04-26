@@ -60,17 +60,32 @@ async function findAll(filters = {}) {
     });
 }
 
-async function updateById(user) {
+async function updateById(article) {
   await Article.update(
     {
-      id_article: user.id,
-      ds_title: user.title,
-      link_pdf: user.linkPdf,
-      ds_summary: user.summary,
+      ds_title: article.title,
+      link_pdf: article.linkPdf,
+      ds_summary: article.summary,
     },
     {
       where: {
-        id_article: user.id,
+        id_article: article.idArticle,
+      },
+    }
+  );
+}
+
+async function updateNrScoreByIdArticle(idArticle) {
+  const nrFinalScoreArticle =
+    await ArticleAppraiserController.nrScoreByIdArticle(idArticle);
+
+  await Article.update(
+    {
+      nr_score: nrFinalScoreArticle,
+    },
+    {
+      where: {
+        id_article: idArticle,
       },
     }
   );
@@ -80,4 +95,5 @@ module.exports = {
   findById,
   findAll,
   updateById,
+  updateNrScoreByIdArticle,
 };

@@ -79,15 +79,13 @@
             </div>
           {{/each}}
          </div>
+         <div class="text-remove col-span-full">
+          {{errors.author.text}}
+        </div>
       </div>
-
     </div>
-
-  <div class="mt-6 flex items-center justify-end gap-x-6 content-end">
-    <button
-      type="button"
-      class="text-sm font-semibold leading-6 text-gray-900"
-    >Cancel</button>
+  <div class="mt-6 flex items-center justify-end gap-x-3 content-end">
+      {{> button text="Cancelar" width="sm:w-auto" bgColor="bg-white" textColor="text-black" class="ring-1" onClick="history.back()" }}
       {{> button text="Salvar"}}
   </div>
 

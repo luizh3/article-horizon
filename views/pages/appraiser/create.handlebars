@@ -1,14 +1,16 @@
 <form class="w-2/4 flex flex-col justify-between" action="/appraiser/create/{{view.idArticle}}" method="POST">
-  {{> SearchFieldButton 
-  name="appraisers"
-  href=view.appraiser.search.href 
-  selecteds=view.appraiser.selecteds 
-  placeHolder="Pesquisar avaliador por nome..." }}
-  <div class="mt-6 flex items-center justify-end gap-x-6 content-end">
-    <button
-      type="button"
-      class="text-sm font-semibold leading-6 text-gray-900"
-    >Cancel</button>
+  <div class="flex flex-col space-y-3">
+    {{> SearchFieldButton 
+    name="appraisers"
+    href=view.appraiser.search.href 
+    selecteds=view.appraiser.selecteds 
+    placeHolder="Pesquisar avaliador por nome..." }}
+    <label class="text-remove">
+      {{errors.appraiser.text}}
+    </label>
+  </div>
+  <div class="mt-6 flex items-center justify-end gap-x-3 content-end">
+     {{> button text="Cancelar" width="sm:w-auto" bgColor="bg-white" textColor="text-black" class="ring-1" onClick="history.back()" }}
      {{> button text="Salvar"}}
   </div>
 </form>

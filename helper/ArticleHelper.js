@@ -15,6 +15,11 @@ function statusArticleToTypeBadge(status) {
   }
 }
 
+function isFinished(type) {
+  return [ArticleStatusEnum.ACEITO, ArticleStatusEnum.REJEITADO].includes(type);
+}
+
 module.exports = {
   statusArticleToTypeBadge,
+  isFinished,
 };

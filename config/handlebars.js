@@ -23,6 +23,9 @@ exports.init = function (app) {
         isEmpty: function (array) {
           return array.length === 0;
         },
+        and: function (first, second) {
+          return first && second;
+        },
         or: function (first, second) {
           return first || second;
         },

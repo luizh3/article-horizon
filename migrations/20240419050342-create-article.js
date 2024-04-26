@@ -30,7 +30,7 @@ module.exports = {
         defaultValue: ArticleStatusEnum.PENDENTE,
       },
       nr_score: {
-        type: Sequelize.DECIMAL(4, 2),
+        type: Sequelize.DECIMAL(5, 2),
         defaultValue: 0.0,
       },
       id_creator_author: {

@@ -1,15 +1,18 @@
-<a
+<button
+  {{#if disabled}}
+    disabled
+  {{/if}}
   class="{{class}}
-    w-36 h-10 font-medium rounded text-sm text-primary flex justify-center items-center space-x-3 shadow-md cursor-pointer"
+    w-36 h-10 font-medium rounded text-sm flex justify-center items-center space-x-3 shadow-md cursor-pointer"
   {{#if onClick}}
     onclick="{{onClick}}"
   {{/if}}
   {{#if href }}
-    href="{{href}}"
+    onclick="window.location.href='{{href}}'"
   {{/if}}
 >
   <div class="font-bold">{{description}}</div>
   <span class="material-symbols-outlined">
     {{icon}}
   </span>
-</a>
+</button>

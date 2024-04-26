@@ -50,9 +50,12 @@ function headerOptions(userType) {
 function userSession(session) {
   const id = session?.user?.id;
   const type = session?.user?.type;
+  const name = session?.user?.name;
 
   return {
     id,
+    name,
+    descricaoTipoUsuario: UserTypeEnum.toString(type),
     isAdmin: UserTypeEnum.ADMIN === type,
     isAuthor: UserTypeEnum.AUTOR === type,
     isAppraise: UserTypeEnum.AVALIADOR === type,

@@ -1,0 +1,12 @@
+<div class="flex flex-col space-y-6 bg-secundaryHover rounded p-6">
+  <label
+    class="text-2xl font-bold bg-primary text-white text-center shadow-md rounded p-2 w-32"
+  >
+    {{description}}
+  </label>
+  <div class="flex space-x-3 cursor-pointer">
+    {{#each cards}}
+        {{> CardLink card=. }}
+    {{/each}}
+  </div>
+</div>

@@ -1,7 +1,9 @@
 <button
   type="submit"
   class="{{class}}
-    bg-primary w-36 h-10 font-medium rounded text-sm text-base hover:bg-primary/50"
+    {{#if width}} {{width}} {{else}} w-36 {{/if}} 
+    {{#if bgColor}} {{bgColor}} {{else}} bg-primary hover:bg-primary/50 {{/if}} 
+    {{#if textColor}} {{textColor}} {{else}} text-base {{/if}} h-10 font-medium rounded text-sm p-2"
   onclick={{onClick}}
 >
   {{text}}

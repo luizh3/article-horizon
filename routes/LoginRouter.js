@@ -41,6 +41,7 @@ router.post("/", async (req, res) => {
   req.session.user = {
     type: user.tp_user,
     id: user.id_user,
+    name: user.ds_name,
   };
 
   res.redirect("/");

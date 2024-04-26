@@ -1,14 +1,40 @@
 <div class="flex flex-col space-y-5 w-3/5 space-x-3">
-  {{> AppraiserScoreModal id="container" href=view.appraiser.update.href appraiser=(sessionAppraiser article.appraisers )}}
-  {{#if ( or ( or userSession.isAdmin ( isEqual userSession.id article.idCreatorAuthor ) ( isInclude userSession.id ( idAppraisers article.appraisers ) ) ) ) }}
+  {{> AppraiserScoreModal 
+  id="container" 
+  href=view.appraiser.update.href 
+  appraiser=view.appraiser.session 
+  inputRegex=view.inputs.score.regex
+  }}
+  {{!-- // TODO refatorar isso, mover regra para o .js --}}
+  {{#if ( or userSession.isAdmin ( or ( isEqual userSession.id article.idCreatorAuthor ) ( and ( isInclude userSession.id ( idAppraisers article.appraisers ) ) view.article.isOpen ) ) ) }}
     <div class="flex flex-end space-x-3 bg-slate200 p-3 rounded h-16">
         {{#if ( or userSession.isAdmin ( isEqual userSession.id article.idCreatorAuthor ) )}}
-          {{> ButtonIcon description="Editar" icon="edit" class="bg-white text-primary" href=view.update.href}}
-          {{> ButtonIcon description="Deletar" icon="delete" class="bg-red100 text-red800" href=view.delete.href }}
+          {{#if ( or userSession.isAuthor view.article.isOpen)}}
+            {{> ButtonIcon description="Editar" icon="edit" class="bg-white text-primary" href=view.buttons.update.href}}
+          {{/if}}
+          {{> ButtonIcon description="Deletar" icon="delete" class="bg-red100 text-red800" href=view.buttons.delete.href }}
         {{/if}}
-        {{#if ( isInclude userSession.id ( idAppraisers article.appraisers ) ) }}
+        {{#if ( and ( isInclude userSession.id ( idAppraisers article.appraisers ) ) view.article.isOpen ) }}
           {{> ButtonIcon description="Notas" icon="edit" class="bg-white text-primary" onClick="onEditAvaliador()" }}
         {{/if}}
+        {{#if ( and userSession.isAdmin view.article.isOpen )}}
+          <form method="POST" action={{view.buttons.accepted.href}}>
+           {{> ButtonIcon 
+            description="Publicar"
+            icon="done"
+            class="bg-green100 text-green800 disabled:bg-green100/35 disabled:text-green800/35"
+            disabled=view.appraiser.isArticleNotRated
+           }}
+          </form>
+          <form method="POST" action={{view.buttons.reject.href}}>
+            {{> ButtonIcon 
+            description="Rejeitar"
+            icon="block"
+            class="bg-red100 text-red800 disabled:bg-red100/35 disabled:text-red800/35"
+            disabled=view.appraiser.isArticleNotRated
+            }}
+          </form>
+         {{/if}}
     </div>
   {{/if}}
   <div class="flex flex-col space-y-5">
@@ -46,7 +72,13 @@
                 {{#if rated}}
                   <div class="flex space-x-3">
                     {{> BadgetScore title="Relevancia" score=relevantScore }}
+                    <div class="flex jusitfy-center items-center">
+                      <label class="font-medium">X</label>
+                    </div>
                     {{> BadgetScore title="Experiencia" score=experienceScore }}
+                    <div class="flex jusitfy-center items-center">
+                      <label class="font-medium">=</label>
+                    </div>
                     {{> BadgetScore title="Nota final" score=(multiplication relevantScore experienceScore) }}
                   </div>
                 {{else}}
@@ -63,12 +95,10 @@
 
 <script>
   function onDelete(id){
-    console.log( id )
     window.location.href = `window.location.href=${id}`
   }
 
   function onEditAvaliador() {
-    console.log("test")
     document.getElementById("container").classList.toggle("hidden")
   }
 </script>

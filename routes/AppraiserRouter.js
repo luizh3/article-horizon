@@ -7,44 +7,83 @@ const UserTypeEnum = require("../enums/UserTypeEnum");
 const UserController = require("../controllers/UserController");
 const ArticleAppraiserController = require("../controllers/ArticleAppraiserController");
 const ArticleStatusEnum = require("../enums/ArticleStatusEnum");
+const ArticleController = require("../controllers/ArticleController");
+const AuthenticationMiddleware = require("../middlewares/AuthenticationMiddleware");
 
-router.get("/:name?", async (req, res) => {
-  const { name } = req.params;
-  const hasName = name !== undefined && name !== "";
+router.get(
+  "/:name?",
+  AuthenticationMiddleware.checkRole([UserTypeEnum.ADMIN]),
+  async (req, res) => {
+    const { name } = req.params;
+    const hasName = name !== undefined && name !== "";
 
-  var appraisers = {};
+    var appraisers = {};
 
-  if (hasName) {
-    appraisers = await UserController.findByNameAndType(
-      name,
-      UserTypeEnum.AVALIADOR
-    );
-  } else {
-    appraisers = (
-      await UserController.findAll({
-        where: { tp_user: UserTypeEnum.AVALIADOR },
-      })
+    if (hasName) {
+      appraisers = await UserController.findByNameAndType(
+        name,
+        UserTypeEnum.AVALIADOR
+      );
+    } else {
+      appraisers = (
+        await UserController.findAll({
+          where: { tp_user: UserTypeEnum.AVALIADOR },
+        })
+      ).map((current) => {
+        return { id: current.id, name: current.name };
+      });
+    }
+
+    res.json(appraisers);
+  }
+);
+
+router.get(
+  "/create/:idArticle",
+  AuthenticationMiddleware.checkRole([UserTypeEnum.ADMIN]),
+  async (req, res) => {
+    const { idArticle } = req.params;
+
+    const appraisers = (
+      await ArticleAppraiserController.findAllByIdArticle(idArticle)
     ).map((current) => {
-      return { id: current.id, name: current.name };
+      return {
+        id: current.idAppraiser,
+        description: current.name,
+      };
+    });
+
+    res.render("pages/appraiser/create", {
+      view: {
+        idArticle,
+        appraiser: {
+          search: {
+            href: `${process.env.API_URL}/appraiser/`,
+          },
+          selecteds: appraisers,
+        },
+      },
     });
   }
+);
 
-  res.json(appraisers);
-});
-
-router.get("/create/:idArticle", async (req, res) => {
-  const { idArticle } = req.params;
-
+async function onErrorLimitAppraisers(
+  idArticle,
+  idAppraisersNew,
+  nrMaxAppraiersArticle,
+  response
+) {
   const appraisers = (
-    await ArticleAppraiserController.findAllByIdArticle(idArticle)
-  ).map((current) => {
-    return {
-      id: current.idAppraiser,
-      description: current.name,
-    };
+    await UserController.findAll({
+      where: {
+        id_user: idAppraisersNew,
+      },
+    })
+  ).map((appraiser) => {
+    return { id: appraiser.id, description: appraiser.name };
   });
 
-  res.render("pages/appraiser/create", {
+  response.render("pages/appraiser/create", {
     view: {
       idArticle,
       appraiser: {
@@ -54,120 +93,129 @@ router.get("/create/:idArticle", async (req, res) => {
         selecteds: appraisers,
       },
     },
-  });
-});
-
-router.post("/create/:idArticle", async (req, res) => {
-  const { idArticle } = req.params;
-
-  var idAppraisersNew = Array.isArray(req.body.options)
-    ? req.body.options
-    : [req.body.options];
-
-  const hasAppraisers =
-    req.body.options !== undefined && idAppraisersNew.length > 0;
-
-  const idAppraisersActual = await ArticleAppraiser.findAll({
-    attributes: ["id_appraiser"],
-    where: {
-      id_article: idArticle,
+    errors: {
+      appraiser: {
+        text: `O limite de avaliador por arigo é ${nrMaxAppraiersArticle}`,
+      },
     },
-  })
-    .then((appraisers) => {
-      return appraisers.map((appraiser) => {
-        return appraiser.dataValues.id_appraiser;
-      });
+  });
+}
+
+router.post(
+  "/create/:idArticle",
+  AuthenticationMiddleware.checkRole([UserTypeEnum.ADMIN], true),
+  async (req, res) => {
+    const { idArticle } = req.params;
+
+    var idAppraisersNew = Array.isArray(req.body.options)
+      ? req.body.options
+      : [req.body.options];
+
+    const nrMaxAppraiersArticle = 3;
+
+    if (idAppraisersNew.length > nrMaxAppraiersArticle) {
+      onErrorLimitAppraisers(
+        idArticle,
+        idAppraisersNew,
+        nrMaxAppraiersArticle,
+        res
+      );
+      return;
+    }
+
+    const hasAppraisers =
+      req.body.options !== undefined && idAppraisersNew.length > 0;
+
+    const idAppraisersActual = await ArticleAppraiser.findAll({
+      attributes: ["id_appraiser"],
+      where: {
+        id_article: idArticle,
+      },
     })
-    .catch((error) => console.log(error));
+      .then((appraisers) => {
+        return appraisers.map((appraiser) => {
+          return appraiser.dataValues.id_appraiser;
+        });
+      })
+      .catch((error) => console.log(error));
 
-  console.log(idAppraisersActual);
+    await ArticleAppraiser.destroy({
+      where: {
+        id_article: idArticle,
+        id_appraiser: idAppraisersActual.filter(
+          (idAppraiser) =>
+            !hasAppraisers || !idAppraisersNew.includes(idAppraiser)
+        ),
+      },
+    });
 
-  await ArticleAppraiser.destroy({
-    where: {
-      id_appraiser: idAppraisersActual.filter(
-        (idAppraiser) =>
-          !hasAppraisers || !idAppraisersNew.includes(idAppraiser)
-      ),
-    },
-  });
+    if (hasAppraisers) {
+      await ArticleAppraiser.bulkCreate(
+        idAppraisersNew
+          .filter((idAppraiser) => !idAppraisersActual.includes(idAppraiser))
+          .map((idAppraiser) => {
+            return {
+              id_article: idArticle,
+              id_appraiser: idAppraiser,
+            };
+          })
+      );
+    }
 
-  if (hasAppraisers) {
-    await ArticleAppraiser.bulkCreate(
-      idAppraisersNew
-        .filter((idAppraiser) => !idAppraisersActual.includes(idAppraiser))
-        .map((idAppraiser) => {
-          return {
-            id_article: idArticle,
-            id_appraiser: idAppraiser,
-          };
-        })
+    const nrFinalScore = await ArticleAppraiserController.nrScoreByIdArticle(
+      idArticle
     );
+
+    await Article.update(
+      {
+        tp_status: hasAppraisers
+          ? ArticleStatusEnum.REVISAO
+          : ArticleStatusEnum.PENDENTE,
+        nr_score: nrFinalScore,
+      },
+      {
+        where: {
+          id_article: idArticle,
+        },
+      }
+    );
+
+    res.redirect("/article/list");
   }
+);
 
-  await Article.update(
-    {
-      tp_status: hasAppraisers
-        ? ArticleStatusEnum.REVISAO
-        : ArticleStatusEnum.PENDENTE,
-    },
-    {
-      where: {
-        id_article: idArticle,
+router.post(
+  "/score/:idArticle",
+  AuthenticationMiddleware.checkRole([UserTypeEnum.AVALIADOR], true),
+  async (req, res) => {
+    const idArticle = req.params.idArticle;
+    const idUserSession = req.session.user.id;
+
+    const { experienceScore, relevantScore } = req.body;
+
+    const nrFinalScore = (
+      parseFloat(experienceScore) * parseFloat(relevantScore)
+    ).toFixed(2);
+
+    await ArticleAppraiser.update(
+      {
+        nr_experience_score: experienceScore,
+        nr_relevant_score: relevantScore,
+        nr_final_score: nrFinalScore,
+        fg_rated: true,
       },
-    }
-  );
+      {
+        where: {
+          id_appraiser: idUserSession,
+          id_article: idArticle,
+        },
+      }
+    );
 
-  res.redirect("/article/list");
-});
+    await ArticleController.updateNrScoreByIdArticle(idArticle);
 
-router.post("/score/:idArticle", async (req, res) => {
-  const idArticle = req.params.idArticle;
-  const idUserSession = req.session.user.id;
-
-  const { experienceScore, relevantScore } = req.body;
-
-  const nrFinalScore = (
-    parseFloat(experienceScore) * parseFloat(relevantScore)
-  ).toFixed(2);
-
-  await ArticleAppraiser.update(
-    {
-      nr_experience_score: experienceScore,
-      nr_relevant_score: relevantScore,
-      nr_final_score: nrFinalScore,
-      fg_rated: true,
-    },
-    {
-      where: {
-        id_appraiser: idUserSession,
-        id_article: idArticle,
-      },
-    }
-  );
-
-  const appraisers = await ArticleAppraiserController.findAllByIdArticle(
-    idArticle
-  );
-
-  const nrFinalScoreArticle =
-    appraisers.reduce((sum, appraiser) => {
-      return sum + parseFloat(appraiser.finalScore);
-    }, 0.0) / appraisers.length;
-
-  console.log(nrFinalScoreArticle);
-
-  await Article.update(
-    {
-      nr_score: nrFinalScoreArticle,
-    },
-    {
-      where: {
-        id_article: idArticle,
-      },
-    }
-  );
-
-  res.redirect(`/article/view/${idArticle}`);
-});
+    res.redirect(`/article/view/${idArticle}`);
+  }
+);
 
 module.exports = router;
