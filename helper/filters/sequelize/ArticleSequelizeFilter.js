@@ -1,5 +1,7 @@
-const TypeScoreFilterEnum = require("../../../enums/filters/TypeScoreFilterEnum");
 const sequelize = require("sequelize");
+
+const TypeScoreFilterEnum = require("../../../enums/filters/TypeScoreFilterEnum");
+const SequelizeFilterHelper = require("./SequelizeFilterHelper");
 
 function searchOrderScore(search, typeScoreFilter) {
   var query = {
@@ -17,9 +19,10 @@ function searchOrderScore(search, typeScoreFilter) {
     query = {
       ...query,
       where: {
-        ds_title: {
-          [sequelize.Op.like]: `%${search}%`,
-        },
+        [sequelize.Op.and]: SequelizeFilterHelper.likeLowerCase(
+          search,
+          "ds_title"
+        ),
       },
     };
   }

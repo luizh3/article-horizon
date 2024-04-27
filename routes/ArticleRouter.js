@@ -217,17 +217,36 @@ router.get(
   "/list",
   AuthenticationMiddleware.isAuthenticated(),
   async (req, res) => {
-    const { search, typeScoreFilter } = req.query;
+    var { search, typeScoreFilter } = req.query;
+
+    let filterScore = ArticleFilters.scoreOrder();
+
+    if (typeScoreFilter !== undefined) {
+      typeScoreFilter = parseInt(typeScoreFilter);
+
+      filterScore = {
+        ...filterScore,
+        options: filterScore.options.map((option) => {
+          return {
+            ...option,
+            selected: option.id === typeScoreFilter,
+          };
+        }),
+      };
+    }
 
     const articles = await ArticleController.findAll(
       ArticleSequelizeFilter.searchOrderScore(search, typeScoreFilter)
     );
 
+    console.log(filterScore);
+
     res.render("pages/article/list", {
       articles: articles,
       isAdmin: true,
       filters: {
-        score: ArticleFilters.scoreOrder(),
+        score: filterScore,
+        search: search,
       },
       helpers: {
         statusArticleToTypeBadge: (status) => {
@@ -316,13 +335,16 @@ router.post(
     const article = req.body;
     const idUserSession = req.session.user.id;
 
-    var idAuthors = article.options.map((idAuthor) => {
-      return parseInt(idAuthor);
-    });
+    var idAuthors = article.options;
+    const hasNewAuthors = idAuthors !== undefined && idAuthors.length > 0;
 
     if (!Array.isArray(idAuthors)) {
       idAuthors = [idAuthors];
     }
+
+    idAuthors = idAuthors.map((idAuthor) => {
+      return parseInt(idAuthor);
+    });
 
     const idCreatorAuthor = await Article.findByPk(idArticle).then(
       (articleDatabase) => {
@@ -359,14 +381,16 @@ router.post(
       },
     });
 
-    await ArticleAuthor.bulkCreate(
-      idAuthors.map((idAuthor) => {
-        return {
-          id_article: idArticle,
-          id_author: idAuthor,
-        };
-      })
-    );
+    if (hasNewAuthors) {
+      await ArticleAuthor.bulkCreate(
+        idAuthors.map((idAuthor) => {
+          return {
+            id_article: idArticle,
+            id_author: idAuthor,
+          };
+        })
+      );
+    }
 
     res.redirect("/article/list");
   }

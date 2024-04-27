@@ -10,6 +10,9 @@ function statusArticleToTypeBadge(status) {
     case ArticleStatusEnum.REJEITADO: {
       return "invalid";
     }
+    case ArticleStatusEnum.ACEITO: {
+      return "valid";
+    }
     default:
       return "";
   }

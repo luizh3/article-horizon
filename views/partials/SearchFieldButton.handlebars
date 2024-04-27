@@ -41,8 +41,6 @@
 
     const json = await response.json();
 
-    console.log(json)
-
     onAddOptions( json )
 
   }
@@ -56,6 +54,21 @@
     document.getElementById("dropdown").classList.toggle("hidden");
 
     var containerSelecteds = document.getElementById("container-selecteds");
+    var selecteds = containerSelecteds.querySelectorAll("#container-selecteds div input");
+
+    let hasOptionSelected = false;
+
+    for ( let index = 0; index < selecteds.length; index++ ) {
+      const selected = selecteds[index];
+      if ( selected.value === option.id ) {
+          hasOptionSelected = true;
+          break;
+      }
+    }
+    
+    if( hasOptionSelected ) {
+      return;
+    }
 
     var badgetCloseTemplate = Handlebars.compile(`{{> BadgetCloseTemplate}}`)
 

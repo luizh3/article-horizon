@@ -1,11 +1,16 @@
 <div
-  class="{{#if ( isEqual type "invalid")}}
+  class="
+  {{#if ( isEqual type "invalid")}}
   bg-red100 text-red800
   {{else}}
     {{#if ( isEqual type "warning")}}
         bg-yellow100 text-yellow800
     {{else}}
-        bg-green100 text-green800
+        {{#if ( isEqual type "valid" )}}
+          bg-green100 text-green800
+        {{else}}
+          {{class}}
+        {{/if}}
     {{/if}}
   {{/if}} font-bold p-2 rounded shadow-md text-center w-56 p-3"
 >{{description}}
