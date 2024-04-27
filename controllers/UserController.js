@@ -58,7 +58,6 @@ async function removeById(id) {
 
 async function findById(id) {
   return await User.findByPk(id).then((current) => {
-    console.log(current);
     if (current === null) {
       return null;
     }

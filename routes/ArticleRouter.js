@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { ArticleAuthor, Article } = require("../models");
+const sequelize = require("sequelize");
 
 const UserTypeEnum = require("../enums/UserTypeEnum");
 const AuthenticationMiddleware = require("../middlewares/AuthenticationMiddleware");
@@ -21,6 +22,11 @@ function viewCreateProperties() {
         "Esta informação será exibido publicamente, então tome cuidado com o que você compartilha.",
       form: {
         action: `/article/create`,
+      },
+      author: {
+        search: {
+          href: `${process.env.API_URL}/article/autor/`,
+        },
       },
     },
   };
@@ -42,7 +48,7 @@ async function isValidLimitAuthors(
 ) {
   const nrMaxAuthorsArticle = 5;
 
-  if (!(idAuthors.length >= nrMaxAuthorsArticle)) {
+  if (idAuthors.length <= nrMaxAuthorsArticle) {
     return true;
   }
 
@@ -53,7 +59,7 @@ async function isValidLimitAuthors(
       },
     })
   ).map((author) => {
-    return { id: author.id, name: author.name };
+    return { id: author.id, description: author.name };
   });
 
   response.render("pages/article/create", {
@@ -73,17 +79,20 @@ router.post(
   "/create",
   AuthenticationMiddleware.checkRole([UserTypeEnum.AUTOR], true),
   async (req, res) => {
-    var { title, linkPdf, summary, authors: idAuthors } = req.body;
+    var { title, linkPdf, summary, options: idAuthors } = req.body;
 
     const idUserSession = req.session.user.id;
 
     if (Array.isArray(idAuthors)) {
       idAuthors.push(idUserSession);
+      idAuthors = idAuthors.map((idAuthor) => {
+        return parseInt(idAuthor);
+      });
     } else {
       idAuthors =
         idAuthors !== undefined
-          ? [idAuthors, toString(req.session.user.id)]
-          : [toString(req.session.user.id)];
+          ? [parseInt(idAuthors), idUserSession]
+          : [idUserSession];
     }
 
     const article = {
@@ -92,7 +101,7 @@ router.post(
       summary,
     };
 
-    if (!isValidLimitAuthors(idAuthors, idUserSession, res, article)) {
+    if (!(await isValidLimitAuthors(idAuthors, idUserSession, res, article))) {
       return;
     }
 
@@ -194,8 +203,6 @@ router.get(
     true
   ),
   async (req, res) => {
-    console.log(`ID: ${req.params.id}`);
-
     await Article.destroy({
       where: {
         id_article: req.params.id,
@@ -274,9 +281,11 @@ router.get(
 
     article = {
       ...article,
-      authors: article.authors.filter(
-        (current) => current.id !== idCurrentUser
-      ),
+      authors: article.authors
+        .filter((current) => current.id !== idCurrentUser)
+        .map((author) => {
+          return { id: author.id, description: author.name };
+        }),
     };
 
     res.render("pages/article/create", {
@@ -287,6 +296,11 @@ router.get(
           "Esta informação será exibido publicamente, então tome cuidado com o que você compartilha.",
         form: {
           action: `/article/update/${id}`,
+        },
+        author: {
+          search: {
+            href: `${process.env.API_URL}/article/autor/`,
+          },
         },
       },
     });
@@ -299,11 +313,12 @@ router.post(
   async (req, res) => {
     const { idArticle } = req.params;
 
-    console.log(`Id Artigo ${idArticle}`);
-
     const article = req.body;
     const idUserSession = req.session.user.id;
-    var idAuthors = article.authors;
+
+    var idAuthors = article.options.map((idAuthor) => {
+      return parseInt(idAuthor);
+    });
 
     if (!Array.isArray(idAuthors)) {
       idAuthors = [idAuthors];
@@ -319,16 +334,18 @@ router.post(
 
     const idAuthorsWithCreator = [...idAuthors, idCreatorAuthor];
 
-    console.log(idAuthorsWithCreator);
-
     if (
-      isValidLimitAuthors(idAuthorsWithCreator, idUserSession, res, article)
+      !(await isValidLimitAuthors(
+        idAuthorsWithCreator,
+        idUserSession,
+        res,
+        article
+      ))
     ) {
-      console.log("return 1312312312");
       return;
     }
 
-    ArticleController.updateById({
+    await ArticleController.updateById({
       ...article,
       idArticle,
     });
@@ -336,7 +353,9 @@ router.post(
     await ArticleAuthor.destroy({
       where: {
         id_article: idArticle,
-        id_author: idAuthors,
+        id_author: {
+          [sequelize.Op.not]: idCreatorAuthor,
+        },
       },
     });
 
@@ -358,8 +377,6 @@ router.post(
   AuthenticationMiddleware.checkRole([UserTypeEnum.ADMIN], true),
   async (req, res) => {
     const { idArticle, tpStatus } = req.query;
-
-    console.log(idArticle, tpStatus);
 
     await Article.update(
       {

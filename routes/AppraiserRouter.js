@@ -111,6 +111,10 @@ router.post(
       ? req.body.options
       : [req.body.options];
 
+    idAppraisersNew = idAppraisersNew.map((idAppraiser) =>
+      parseInt(idAppraiser)
+    );
+
     const nrMaxAppraiersArticle = 3;
 
     if (idAppraisersNew.length > nrMaxAppraiersArticle) {
@@ -139,27 +143,28 @@ router.post(
       })
       .catch((error) => console.log(error));
 
+    const idsDelete = idAppraisersActual.filter(
+      (idAppraiser) => !hasAppraisers || !idAppraisersNew.includes(idAppraiser)
+    );
+
     await ArticleAppraiser.destroy({
       where: {
         id_article: idArticle,
-        id_appraiser: idAppraisersActual.filter(
-          (idAppraiser) =>
-            !hasAppraisers || !idAppraisersNew.includes(idAppraiser)
-        ),
+        id_appraiser: idsDelete,
       },
     });
 
+    const newAuthors = idAppraisersNew
+      .filter((idAppraiser) => !idAppraisersActual.includes(idAppraiser))
+      .map((idAppraiser) => {
+        return {
+          id_article: idArticle,
+          id_appraiser: idAppraiser,
+        };
+      });
+
     if (hasAppraisers) {
-      await ArticleAppraiser.bulkCreate(
-        idAppraisersNew
-          .filter((idAppraiser) => !idAppraisersActual.includes(idAppraiser))
-          .map((idAppraiser) => {
-            return {
-              id_article: idArticle,
-              id_appraiser: idAppraiser,
-            };
-          })
-      );
+      await ArticleAppraiser.bulkCreate(newAuthors);
     }
 
     const nrFinalScore = await ArticleAppraiserController.nrScoreByIdArticle(

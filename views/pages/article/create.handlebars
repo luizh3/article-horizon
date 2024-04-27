@@ -53,36 +53,14 @@
             >{{article.summary}}</textarea>
           </div>
       </div>
-      
-      <div class="col-span-full flex flex-col space-y-3">   
-          <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-          <div class="relative">
-              <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                  <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                  </svg>
-              </div>
-              <input type="search" id="default-search" oninput="onInputAuthorChanged()" class="border-0 ring-1 ring-inset block w-full p-4 ps-10 text-sm rounded" placeholder="Pesquisar mais algum autor..." />
-              <button onclick="onSearchAutor(event)" type="submit" class="text-base absolute end-2.5 bottom-2.5 bg-primary hover:bg-primary/50 font-medium rounded text-sm px-4 py-2 ">Search</button>
-          </div>
-          <div id="dropdown" class="hidden z-10 bg-white divide-y rounded-lg shadow col-span-full h-46 overflow-auto dark:bg-gray-700">
-            <ul id="dropdownOptions" class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton"></ul>
-         </div>
-         <div id="container-authors" class="col-span-full grid grid-cols-4 gap-4">
-          {{#each article.authors}}
-            <div id="author-{{id}}" class="flex bg-white justify-center items-center border-secundaryHover border-b rounded h-10">
-              <input hidden name="authors" type="text" value="{{id}}" readonly ></input>
-              <div class="flex justify-between items-center w-full p-3.5">
-                <label>{{name}}</label>
-                <a class="cursor-pointer text-remove text-2xl" onclick="onRemoveAuthor('author-{{id}}')" > &times;</a>
-              </div>
-            </div>
-          {{/each}}
-         </div>
-         <div class="text-remove col-span-full">
-          {{errors.author.text}}
-        </div>
-      </div>
+      {{> SearchFieldButton 
+      name="authors"
+      href=view.author.search.href 
+      selecteds=article.authors
+      placeHolder="Pesquisar autor por nome..." }}
+      <label class="text-remove col-span-full">
+        {{errors.author.text}}
+      </label>
     </div>
   <div class="mt-6 flex items-center justify-end gap-x-3 content-end">
       {{> button text="Cancelar" width="sm:w-auto" bgColor="bg-white" textColor="text-black" class="ring-1" onClick="onCancel(event)" }}
@@ -101,9 +79,6 @@
     history.back();
   }
 
-  function onInputAuthorChanged() {
-    document.getElementById("dropdown").classList.add("hidden");
-  }
 
   async function onSearchAutor( event ) {
 

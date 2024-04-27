@@ -32,9 +32,6 @@ router.post(
       user
     );
 
-    console.log(hasUsername);
-    console.log(hasEmail);
-
     if (!hasUsername && !hasEmail) {
       const userInsert = await UserController.insert(user);
 
@@ -103,8 +100,6 @@ router.get(
   AuthenticationMiddleware.checkRole([UserTypeEnum.ADMIN]),
   async (req, res) => {
     const { search, typeUser } = req.query;
-
-    console.log(req.query);
 
     const users = await UserController.findAll(
       UserSequelizeFilter.searchNameAndUserType(search, typeUser)

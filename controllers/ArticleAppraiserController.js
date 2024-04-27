@@ -26,17 +26,18 @@ async function findAllByIdArticle(id) {
 async function nrScoreByIdArticle(idArticle) {
   const appraisers = await findAllByIdArticle(idArticle);
 
-  console.log("test");
-  console.log(appraisers);
-
   if (appraisers.length === 0) {
     return 0.0;
   }
 
+  const nrAppraiserRated = appraisers.filter(
+    (appraiser) => appraiser.rated
+  ).length;
+
   return (
     appraisers.reduce((sum, appraiser) => {
       return sum + parseFloat(appraiser.finalScore);
-    }, 0.0) / appraisers.length
+    }, 0.0) / nrAppraiserRated
   );
 }
 
