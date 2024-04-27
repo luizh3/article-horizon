@@ -179,6 +179,10 @@ router.get(
       },
       helpers: {
         authorsToRaw(list) {
+          if (list === undefined || list.length === 0) {
+            return "Nenhum autor encontrado";
+          }
+
           return list
             .map((current) => {
               return current.name;
