@@ -30,7 +30,16 @@ async function removeByIds(ids) {
   return await ArticleAuthor.destroy({ where: { id: ids } });
 }
 
+async function removeByIdAutor(id) {
+  await ArticleAuthor.destroy({
+    where: {
+      id_author: id,
+    },
+  });
+}
+
 module.exports = {
   findAllByIdArticle,
   removeByIds,
+  removeByIdAutor,
 };

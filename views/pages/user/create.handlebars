@@ -1,94 +1,52 @@
 <form class="flex flex-col w-2/4" action="{{view.action}}" method="POST">
-
-      <h2 class="font-semibold leading-7">{{view.title}}</h2>
-      <p class="mt-1 text-sm leading-6 text-gray-600 ">{{view.description}}</p>
-
-      <div class="flex flex-col justify-between bg-base basis-full">
-
+    <h2 class="font-semibold leading-7">{{view.title}}</h2>
+    <p class="mt-1 text-sm leading-6 text-gray-600 ">{{view.description}}</p>
+    <div class="flex flex-col justify-between bg-base basis-full">
       <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+        {{> Input 
+        class="sm:col-span-3" 
+        description="Nome" 
+        name="name" 
+        value=user.name
+        type="text"
+        required=true
+        }}
 
-        <div class="sm:col-span-3">
-          <label
-            for="name"
-            class="block text-sm font-medium leading-6 text-gray-900"
-          >Nome</label>
-          <div class="mt-2">
-            <input
-              id="name"
-              type="text"
-              name="name"
-              value="{{user.name}}"
-              class="block w-full rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              required
-            />
-          </div>
-        </div>
+        {{> Input 
+        class="sm:col-span-3" 
+        description="E-mail" 
+        name="email" 
+        value=user.email
+        type="email"
+        required=true
+        error=errors.email.text
+        }}
 
-        <div class="sm:col-span-3">
-          <label
-            for="email"
-            class="block text-sm font-medium leading-6 text-gray-900"
-          >E-mail</label>
-          <div class="mt-2">
-            <input
-              id="email"
-              type="email"
-              name="email"
-              value="{{user.email}}"
-              class="block w-full rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              required
-            />
-          </div>
-          <label class="text-remove">
-            {{errors.email.text}}
-          </label>
-        </div>
+        {{> Input 
+        class="sm:col-span-3" 
+        description="Username" 
+        name="username" 
+        value=user.username
+        type="text"
+        required=true
+        error=errors.username.text
+        }}
 
-         <div class="sm:col-span-3">
-          <label
-            for="username"
-            class="block text-sm font-medium leading-6 text-gray-900"
-          >Username</label>
-          <div class="mt-2">
-            <input
-              id="username"
-              type="text"
-              name="username"
-              value="{{user.username}}"
-              class="block w-full rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              required
-            />
-          </div>
-          <label class="text-remove">
-            {{errors.username.text}}
-          </label>
-        </div>
-
-        <div class="sm:col-span-3">
-          <label
-            for="password"
-            class="block text-sm font-medium leading-6 text-gray-900"
-          >Senha</label>
-          <div class="mt-2">
-            <input
-              id="password"
-              type="password"
-              name="password"
-              value="{{user.password}}"
-              class="block w-full rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              required
-            />
-          </div>
-        </div>
+        {{> Input 
+        class="sm:col-span-3" 
+        description="Senha" 
+        name="password" 
+        value=user.password
+        type="password"
+        required=true
+        }}
 
         {{> select options=view.authorsSelect description="Função do usuario" class="col-span-full" showLabel=true name="type" }}
-
     </div>
-
-  <div class="mt-6 flex items-center justify-end gap-x-3 content-end">
-      {{> button text="Cancelar" width="sm:w-auto" bgColor="bg-white" textColor="text-black" class="ring-1" onClick="onCancel(event)" }}
-      {{> button text="Salvar"}}
-  </div>
+    <div class="mt-6 flex items-center justify-end gap-x-3 content-end">
+        {{> button text="Cancelar" width="sm:w-auto" bgColor="bg-white" textColor="text-black" class="ring-1" onClick="onCancel(event)" }}
+        {{> button text="Salvar"}}
+    </div>
   </div>
 </form>
 

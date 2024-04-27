@@ -41,7 +41,32 @@ async function nrScoreByIdArticle(idArticle) {
   );
 }
 
+async function findIdArtigosByIdAppraiser(idAppraiser) {
+  return await ArticleAppraiser.findAll({
+    attributes: ["id_article"],
+    where: {
+      id_appraiser: idAppraiser,
+    },
+  })
+    .then((articleAppraisers) => {
+      return articleAppraisers.map((articleAppraiser) => {
+        return articleAppraiser.dataValues.id_article;
+      });
+    })
+    .catch((error) => console.error(error));
+}
+
+async function removeByIdAppraiser(id) {
+  await ArticleAppraiser.destroy({
+    where: {
+      id_appraiser: id,
+    },
+  });
+}
+
 module.exports = {
   findAllByIdArticle,
   nrScoreByIdArticle,
+  removeByIdAppraiser,
+  findIdArtigosByIdAppraiser,
 };

@@ -243,8 +243,6 @@ router.get(
       ArticleSequelizeFilter.searchOrderScore(search, typeScoreFilter)
     );
 
-    console.log(filterScore);
-
     res.render("pages/article/list", {
       articles: articles,
       isAdmin: true,
@@ -302,14 +300,16 @@ router.get(
 
     var article = await ArticleController.findById(id);
 
-    article = {
-      ...article,
-      authors: article.authors
-        .filter((current) => current.id !== idCurrentUser)
-        .map((author) => {
-          return { id: author.id, description: author.name };
-        }),
-    };
+    if (article.authors.length > 0) {
+      article = {
+        ...article,
+        authors: article.authors
+          .filter((current) => current.id !== idCurrentUser)
+          .map((author) => {
+            return { id: author.id, description: author.name };
+          }),
+      };
+    }
 
     res.render("pages/article/create", {
       article,

@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 const UserController = require("../controllers/UserController");
+const ArticleAppraiserController = require("../controllers/ArticleAppraiserController");
+const ArticleAuthorController = require("../controllers/ArticleAuthorController");
+const ArticleController = require("../controllers/ArticleController");
+
 const UserHelper = require("../helper/UserHelper");
 const AuthenticationMiddleware = require("../middlewares/AuthenticationMiddleware");
 const UserTypeEnum = require("../enums/UserTypeEnum");
@@ -119,7 +123,31 @@ router.get(
   "/delete/:id",
   AuthenticationMiddleware.checkRole([UserTypeEnum.ADMIN], true),
   async (req, res) => {
-    await UserController.removeById(req.params.id);
+    const idUser = parseInt(req.params.id);
+
+    // TODO change for user associations of sequelize
+
+    const user = await UserController.findById(idUser);
+
+    if (user === null) {
+      return;
+    }
+
+    if (user.type === UserTypeEnum.AUTOR) {
+      await ArticleAuthorController.removeByIdAutor(idUser);
+    }
+
+    if (user.type === UserTypeEnum.AVALIADOR) {
+      const idArtigos =
+        await ArticleAppraiserController.findIdArtigosByIdAppraiser(idUser);
+
+      await ArticleAppraiserController.removeByIdAppraiser(idUser);
+
+      await ArticleController.updateNrScoreByIdArticles(idArtigos);
+    }
+
+    await UserController.removeById(idUser);
+
     res.redirect("/user/list");
   }
 );

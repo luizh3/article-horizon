@@ -1,58 +1,34 @@
 <form class="flex flex-col w-2/4 " action="{{view.form.action}}" method="POST">
+  <h2 class="font-semibold leading-7">{{view.title}}</h2>
+  <p class="mt-1 text-sm leading-6 text-gray-600 ">{{view.description}}</p>
+  <div class="flex flex-col justify-between bg-base basis-full">
+    <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+      {{> Input 
+      class="sm:col-span-3" 
+      description="Titulo" 
+      name="title" 
+      value=article.title
+      type="text"
+      required=true
+      }}
 
-      <h2 class="font-semibold leading-7">{{view.title}}</h2>
-      <p class="mt-1 text-sm leading-6 text-gray-600 ">{{view.description}}</p>
+      {{> Input 
+      class="sm:col-span-3" 
+      description="Link PDF" 
+      name="linkPdf" 
+      value=article.linkPdf
+      type="text"
+      }}
 
-      <div class="flex flex-col justify-between bg-base basis-full">
+      {{> 
+      TextArea 
+      name="summary" 
+      rows="5" 
+      value=article.summary 
+      description="Resumo" 
+      class="col-span-full" 
+      }}
 
-      <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-
-        <div class="sm:col-span-3">
-          <label
-            for="title"
-            class="block text-sm font-medium leading-6 text-gray-900"
-          >Titulo</label>
-          <div class="mt-2">
-            <input
-              id="title"
-              type="text"
-              name="title"
-              value="{{article.title}}"
-              class="block w-full rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-          </div>
-        </div>
-
-        <div class="sm:col-span-3">
-          <label
-            for="linkPdf"
-            class="block text-sm font-medium leading-6 text-gray-900"
-          >Link PDF</label>
-          <div class="mt-2">
-            <input
-              id="linkPdf"
-              type="text"
-              name="linkPdf"
-              value="{{article.linkPdf}}"
-              class="block w-full rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-          </div>
-        </div>
-
-        <div class="col-span-full">
-          <label
-            for="summary"
-            class="block text-sm font-medium leading-6 text-gray-900"
-          >Resumo</label>
-          <div class="mt-2">
-            <textarea
-              id="summary"
-              name="summary"
-              rows="5"
-              class="block w-full rounded border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            >{{article.summary}}</textarea>
-          </div>
-      </div>
       {{> SearchFieldButton 
       name="authors"
       href=view.author.search.href 
@@ -62,13 +38,11 @@
         {{errors.author.text}}
       </label>
     </div>
-  <div class="mt-6 flex items-center justify-end gap-x-3 content-end">
+    <div class="mt-6 flex items-center justify-end gap-x-3 content-end">
       {{> button text="Cancelar" width="sm:w-auto" bgColor="bg-white" textColor="text-black" class="ring-1" onClick="onCancel(event)" }}
       {{> button text="Salvar"}}
+    </div>
   </div>
-
-  </div>
-
 </form>
 
 <script>

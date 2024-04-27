@@ -75,6 +75,12 @@ async function updateById(article) {
   );
 }
 
+async function updateNrScoreByIdArticles(idArticles) {
+  await idArticles.forEach(async (idArticle) => {
+    await updateNrScoreByIdArticle(idArticle);
+  });
+}
+
 async function updateNrScoreByIdArticle(idArticle) {
   const nrFinalScoreArticle =
     await ArticleAppraiserController.nrScoreByIdArticle(idArticle);
@@ -96,4 +102,5 @@ module.exports = {
   findAll,
   updateById,
   updateNrScoreByIdArticle,
+  updateNrScoreByIdArticles,
 };
