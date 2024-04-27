@@ -85,7 +85,7 @@
       </div>
     </div>
   <div class="mt-6 flex items-center justify-end gap-x-3 content-end">
-      {{> button text="Cancelar" width="sm:w-auto" bgColor="bg-white" textColor="text-black" class="ring-1" onClick="history.back()" }}
+      {{> button text="Cancelar" width="sm:w-auto" bgColor="bg-white" textColor="text-black" class="ring-1" onClick="onCancel(event)" }}
       {{> button text="Salvar"}}
   </div>
 
@@ -95,16 +95,20 @@
 
 <script>
 
+  function onCancel(event) {
+    event.preventDefault();
+    event.stopImmediatePropagation()
+    history.back();
+  }
+
   function onInputAuthorChanged() {
     document.getElementById("dropdown").classList.add("hidden");
   }
 
   async function onSearchAutor( event ) {
 
-    console.log( event )
     event.preventDefault();
     event.stopImmediatePropagation()
-    console.log("test")
 
     const authorName = document.getElementById("default-search").value;
 

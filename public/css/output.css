@@ -993,6 +993,10 @@ select {
   min-height: 100%;
 }
 
+.w-2\/3 {
+  width: 66.666667%;
+}
+
 .w-2\/4 {
   width: 50%;
 }
@@ -1003,6 +1007,10 @@ select {
 
 .w-3\/5 {
   width: 60%;
+}
+
+.w-32 {
+  width: 8rem;
 }
 
 .w-36 {
@@ -1021,40 +1029,12 @@ select {
   width: 1.5rem;
 }
 
-.w-96 {
-  width: 24rem;
-}
-
 .w-auto {
   width: auto;
 }
 
 .w-full {
   width: 100%;
-}
-
-.w-32 {
-  width: 8rem;
-}
-
-.w-44 {
-  width: 11rem;
-}
-
-.w-2\/5 {
-  width: 40%;
-}
-
-.w-4\/5 {
-  width: 80%;
-}
-
-.w-3\/4 {
-  width: 75%;
-}
-
-.w-2\/3 {
-  width: 66.666667%;
 }
 
 .max-w-7xl {
@@ -1101,10 +1081,6 @@ select {
 
 .grid-cols-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-.flex-row {
-  flex-direction: row;
 }
 
 .flex-col {
@@ -1315,11 +1291,6 @@ select {
   background-color: rgb(var(--color-red-100) / var(--tw-bg-opacity));
 }
 
-.bg-remove {
-  --tw-bg-opacity: 1;
-  background-color: rgb(var(--color-remove) / var(--tw-bg-opacity));
-}
-
 .bg-secundaryHover {
   --tw-bg-opacity: 1;
   background-color: rgb(var(--color-secundary-hover) / var(--tw-bg-opacity));
@@ -1370,10 +1341,6 @@ select {
 
 .p-6 {
   padding: 1.5rem;
-}
-
-.p-12 {
-  padding: 3rem;
 }
 
 .px-2 {
@@ -1554,28 +1521,14 @@ select {
   color: rgb(var(--color-remove) / var(--tw-text-opacity));
 }
 
-.text-yellow800 {
-  --tw-text-opacity: 1;
-  color: rgb(var(--color-yellow-800) / var(--tw-text-opacity));
-}
-
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(var(--color-white) / var(--tw-text-opacity));
 }
 
-.text-secundary {
+.text-yellow800 {
   --tw-text-opacity: 1;
-  color: rgb(var(--color-secundary) / var(--tw-text-opacity));
-}
-
-.text-secundaryHover {
-  --tw-text-opacity: 1;
-  color: rgb(var(--color-secundary-hover) / var(--tw-text-opacity));
-}
-
-.text-black\/50 {
-  color: rgb(var(--color-black) / 0.5);
+  color: rgb(var(--color-yellow-800) / var(--tw-text-opacity));
 }
 
 .shadow {
@@ -1628,15 +1581,6 @@ select {
   transition-property: opacity;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
-}
-
-.hover\:border:hover {
-  border-width: 1px;
-}
-
-.hover\:border-primary:hover {
-  --tw-border-opacity: 1;
-  border-color: rgb(var(--color-primary) / var(--tw-border-opacity));
 }
 
 .hover\:bg-base:hover {
