@@ -2,16 +2,16 @@
   <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
     <div class="relative flex h-16 items-center justify-between">
       <div
-        class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start"
+        class="flex flex-1 sm:items-stretch sm:justify-start"
       >
         <div class="flex cursor-pointer flex-shrink-0 items-center" onclick="window.location.href='/'">
           <img
             class="h-8 w-auto"
-            src="../../images/logo.png"
+            src="/images/logo.png"
             alt="Your Company"
           />
         </div>
-        <div class="hidden sm:ml-6 sm:block">
+        <div class=" sm:ml-6 sm:block">
           <div class="flex space-x-4">
             {{#each headerOptions}}
               {{> HeaderOption option=. }}

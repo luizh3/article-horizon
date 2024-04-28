@@ -1,11 +1,11 @@
-const handlebars = require("express-handlebars");
+const expressHandlebars = require("express-handlebars");
 
 const { MAIN_LAYOUT_NAME } = require("../helper/constants/handlebarsConstants");
 
 exports.init = function (app) {
   app.engine(
     "handlebars",
-    handlebars.engine({
+    expressHandlebars.engine({
       defaultLayout: MAIN_LAYOUT_NAME,
       helpers: {
         isDefined: function (value) {

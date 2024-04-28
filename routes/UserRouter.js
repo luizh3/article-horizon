@@ -113,6 +113,7 @@ router.get(
       filters: {
         user: {
           types: UserHelper.userTypes(),
+          search: search,
         },
       },
     });
