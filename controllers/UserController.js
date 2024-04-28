@@ -1,14 +1,13 @@
-const { Op } = require("sequelize");
+const sequelize = require("sequelize");
 const { User } = require("../models");
-const { use } = require("../routes/ArticleRouter");
 
-const UserHelper = require("../helper/UserHelper");
 const UserTypeEnum = require("../enums/UserTypeEnum");
+const SequelizeFilterHelper = require("../helper/filters/sequelize/SequelizeFilterHelper");
 
 async function hasUserRegister(user) {
   return await User.findOne({
     where: {
-      [Op.or]: {
+      [sequelize.Op.or]: {
         ds_username: user.username,
         ds_email: user.email,
       },
@@ -94,9 +93,10 @@ async function findByNameAndType(dsName, typeUser) {
     attributes: ["ds_name", "id_user"],
     where: {
       tp_user: typeUser,
-      ds_name: {
-        [Op.like]: `%${dsName}%`,
-      },
+      [sequelize.Op.and]: SequelizeFilterHelper.likeLowerCase(
+        dsName,
+        "ds_name"
+      ),
     },
   })
     .then((users) => {

@@ -10,6 +10,9 @@
       name="{{name}}"
       value="{{value}}"
       oninput="validInput(this)"
+      {{#if step}}
+        step="{{step}}"
+      {{/if}}
       {{#if pattern}}
         pattern="{{pattern}}"
       {{/if}}

@@ -1,17 +1,17 @@
 <div class="col-span-full flex flex-col space-y-3">   
-    <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
     <div class="relative">
         <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
             </svg>
         </div>
-        <input type="search" id="default-search" oninput="onInputChanged()" class="border-0 ring-1 ring-inset block w-full p-4 ps-10 text-sm rounded" placeholder="{{placeHolder}}" />
+        <input type="search" id="default-search" oninput="onInputChanged()" class="none border-0 ring-1 ring-inset block w-full p-4 ps-10 text-sm rounded" placeholder="{{placeHolder}}" />
         <button onclick="onSearch(event)" type="submit" class="text-base absolute end-2.5 bottom-2.5 bg-primary hover:bg-primary/50 font-medium rounded text-sm px-4 py-2 ">Search</button>
     </div>
-    <div id="dropdown" class="hidden z-10 bg-white divide-y rounded-lg shadow col-span-full h-46 overflow-auto dark:bg-gray-700">
+    <div id="dropdown" class="hidden z-10 bg-white divide-y rounded-lg shadow col-span-full h-46 overflow-auto">
       <ul id="dropdownOptions" class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton"></ul>
     </div>
+    <label id="information" class="text-remove" hidden></label>
     <div id="container-selecteds" class="col-span-full grid grid-cols-4 gap-4">
       {{#each selecteds}}
         {{> BadgetClose id=id name=name }}
@@ -22,6 +22,7 @@
 
   function onInputChanged() {
     document.getElementById("dropdown").classList.add("hidden");
+    messageInformation()
   }
 
   async function onSearch( event ) {
@@ -98,12 +99,21 @@
     return html;
   }
 
+  function messageInformation( message = "" ){
+    var information = document.getElementById("information");
+    information.innerHTML = message;
+    information.hidden = message === "";
+  }
+
   function onAddOptions( options ) {
 
       var dropdown = document.getElementById("dropdown");
 
       if( options.length === 0  ){
         dropdown.classList.add("hidden");
+
+        messageInformation("Nenhum resultado encontrado...")
+
         return;
       }
 

@@ -44,7 +44,7 @@
     <div class="flex space-x-3 items-center">
       {{> Badge description=article.status.description type=(statusArticleToTypeBadge article.status.type)}}
       {{#if article.totalScore }}
-        {{> BadgetScore title="Nota final" score=article.totalScore }}
+        {{> BadgetScore title="Nota final" score=article.totalScore good=80 medium=60 }}
       {{else}}
         {{> Badge description="Não avaliado" type="warning" }}
       {{/if}}
@@ -71,15 +71,15 @@
               <div>
                 {{#if rated}}
                   <div class="flex space-x-3">
-                    {{> BadgetScore title="Relevancia" score=relevantScore }}
+                    {{> BadgetScore title="Relevancia" score=relevantScore good=8 medium=6 }}
                     <div class="flex jusitfy-center items-center">
                       <label class="font-medium">X</label>
                     </div>
-                    {{> BadgetScore title="Experiencia" score=experienceScore }}
+                    {{> BadgetScore title="Experiencia" score=experienceScore good=8 medium=6 }}
                     <div class="flex jusitfy-center items-center">
                       <label class="font-medium">=</label>
                     </div>
-                    {{> BadgetScore title="Nota final" score=(multiplication relevantScore experienceScore) }}
+                    {{> BadgetScore title="Nota final" good=80 medium=60 score=(multiplication relevantScore experienceScore) }}
                   </div>
                 {{else}}
                     {{> Badge description="Não avaliado" type="warning" }}

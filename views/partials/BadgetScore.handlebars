@@ -4,10 +4,10 @@
   <label>{{title}}</label>
   <span
     class="
-    {{#if ( isBiggerOrEqual score 8)}}
+    {{#if ( isBiggerOrEqual score good)}}
     bg-green100 text-green800
     {{else}}
-        {{#if (isBiggerOrEqual score 6)}}
+        {{#if (isBiggerOrEqual score medium)}}
          bg-yellow100 text-yellow800
         {{else}}
          bg-red100 text-red800 

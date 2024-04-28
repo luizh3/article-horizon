@@ -34,6 +34,10 @@ async function nrScoreByIdArticle(idArticle) {
     (appraiser) => appraiser.rated
   ).length;
 
+  if (nrAppraiserRated === 0) {
+    return 0.0;
+  }
+
   return (
     appraisers.reduce((sum, appraiser) => {
       return sum + parseFloat(appraiser.finalScore);

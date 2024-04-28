@@ -22,7 +22,7 @@
             <div class="flex space-x-3 items-center">
               {{> Badge description=status.description type=(statusArticleToTypeBadge status.type)}}
               {{#if totalScore }}
-                {{> BadgetScore title="Nota final" score=totalScore }}
+                {{> BadgetScore title="Nota final" score=totalScore good=80 medium=60 }}
               {{else}}
                 {{> Badge description="Não avaliado" type="warning" }}
               {{/if}}
