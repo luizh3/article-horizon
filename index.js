@@ -14,7 +14,6 @@ initSession(app);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(authentication);
 app.use(properties);
 app.use(routes);
 
