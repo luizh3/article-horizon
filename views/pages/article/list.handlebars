@@ -8,8 +8,11 @@
           </div>
       </form>
   </div>
+  {{#if ( isEmpty articles ) }}
+    {{> ResultNotFound}}
+  {{/if}}
+  {{#each articles}}
   <ul class="flex flex-col space-y-4">
-    {{#each articles}}
       <li
         onclick="window.location.href='/article/view/{{id}}'"
         class="flex col-span-full cursor-pointer p-5 h-42 rounded shadow-md hover:bg-slate200 bg-white items-center justify-between"
