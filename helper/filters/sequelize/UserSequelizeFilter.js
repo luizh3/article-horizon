@@ -28,6 +28,7 @@ function searchNameAndUserType(search, typeUser) {
     query = {
       ...query,
       where: {
+        ...query.where,
         [sequelize.Op.and]: SequelizeFilterHelper.likeLowerCase(
           search,
           "ds_name"
