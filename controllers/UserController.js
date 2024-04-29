@@ -72,20 +72,25 @@ async function findById(id) {
 }
 
 async function updateById(user) {
-  await User.update(
-    {
-      ds_username: user.username,
+  var attributes = {
+    ds_username: user.username,
+    tp_user: parseInt(user.type),
+    ds_name: user.name,
+    ds_email: user.email,
+  };
+
+  if (user.password !== undefined && user.password !== "") {
+    attributes = {
+      ...attributes,
       ds_password: user.password,
-      tp_user: parseInt(user.type),
-      ds_name: user.name,
-      ds_email: user.email,
+    };
+  }
+
+  await User.update(attributes, {
+    where: {
+      id_user: user.id,
     },
-    {
-      where: {
-        id_user: user.id,
-      },
-    }
-  );
+  });
 }
 
 async function findByNameAndType(dsName, typeUser) {

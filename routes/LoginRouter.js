@@ -8,17 +8,17 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { hasEmail, hasPassword, user } = await loginController.onLogin(
+  const { hasIdentifier, hasPassword, user } = await loginController.onLogin(
     req.body
   );
 
-  if (!hasEmail) {
+  if (!hasIdentifier) {
     res.render("pages/login", {
       layout: "main-clean",
-      email: req.body.email,
+      identifier: req.body.identifier,
       errors: {
-        email: {
-          text: "E-mail não encontrado. ",
+        identifier: {
+          text: "E-mail ou nome de usuario incorreto. ",
         },
       },
     });
@@ -28,7 +28,7 @@ router.post("/", async (req, res) => {
   if (!hasPassword) {
     res.render("pages/login", {
       layout: "main-clean",
-      email: req.body.email,
+      identifier: req.body.identifier,
       errors: {
         password: {
           text: "Senha não confere.",

@@ -17,19 +17,15 @@ module.exports = (sequelize, DataTypes) => {
   }
   ArticleAppraiser.init(
     {
-      id_article_appraiser: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-        allowNull: false,
-      },
       id_article: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        primaryKey: true,
       },
       id_appraiser: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        primaryKey: true,
       },
       nr_relevant_score: {
         type: DataTypes.DECIMAL(4, 2),

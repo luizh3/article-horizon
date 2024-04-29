@@ -21,6 +21,11 @@ router.get(
         description: "Esta pagina destina-se a criação de novos usuarios.",
         authorsSelect: UserHelper.userTypes(),
         action: "/user/create",
+        user: {
+          password: {
+            required: true,
+          },
+        },
       },
     });
   }
@@ -84,6 +89,11 @@ router.get(
         description: "Esta pagina destina-se a editar usuarios existentes.",
         authorsSelect: UserHelper.userTypesSelected(user.type),
         action: `/user/update/${user.id}`,
+        user: {
+          password: {
+            required: false,
+          },
+        },
       },
     });
   }

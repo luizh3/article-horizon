@@ -3,19 +3,15 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("article_appraiser", {
-      id_article_appraiser: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-        allowNull: false,
-      },
       id_article: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        primaryKey: true,
       },
       id_appraiser: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        primaryKey: true,
       },
       nr_relevant_score: {
         type: Sequelize.DECIMAL(4, 2),

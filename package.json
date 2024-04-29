@@ -9,7 +9,9 @@
     "migrate:undo": "npx sequelize-cli db:migrate:undo",
     "seed:up": "npx sequelize-cli db:seed:all",
     "seed:undo": "npx sequelize-cli db:seed:undo",
-    "start": "nodemon --env-file .env ./index.js"
+    "start": "nodemon --env-file .env ./index.js",
+    "create:database": "npx sequelize-cli db:create",
+    "migrate:database": "npm run create:database && npm run migrate:up && npm run seed:up"
   },
   "author": "",
   "license": "ISC",
