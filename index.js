@@ -5,7 +5,6 @@ const path = require("path");
 const { init: initHandlebars } = require("./config/handlebars");
 const { init: initSession } = require("./config/session");
 
-const { authentication } = require("./middlewares/AuthenticationMiddleware");
 const { properties } = require("./middlewares/PropertiesDefaultMiddleware");
 
 var app = express();

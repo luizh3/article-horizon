@@ -57,7 +57,6 @@
 
   var idMainContainerTemplate = Handlebars.compile(`{{id}}`)
   var value = idMainContainerTemplate({});
-  console.log( value )
 
   function onCancel() { 
     document.getElementById(value).classList.toggle("hidden") 
