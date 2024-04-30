@@ -3,6 +3,7 @@ const ArticleStatusEnum = require("../enums/ArticleStatusEnum");
 function statusArticleToTypeBadge(status) {
   switch (status) {
     case ArticleStatusEnum.PENDENTE:
+    case ArticleStatusEnum.AVALIACAO:
     case ArticleStatusEnum.REVISAO: {
       return "warning";
     }

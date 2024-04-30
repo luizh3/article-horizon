@@ -4,6 +4,7 @@ const ArticleStatusEnum = {
   ACEITO: 2,
   REJEITADO: 3,
   PENDENTE: 4,
+  AVALIACAO: 5,
 
   toString: (type) => {
     const options = {
@@ -11,6 +12,7 @@ const ArticleStatusEnum = {
       2: "Aceito",
       3: "Rejeitado",
       4: "Pendente",
+      5: "Avaliação",
     };
 
     return options[type] ?? "Não informado";

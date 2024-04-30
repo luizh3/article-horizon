@@ -23,6 +23,22 @@ async function findAllByIdArticle(id) {
     .catch((error) => console.error(error));
 }
 
+async function isAllRatedByIdArticle(idArticle) {
+  return await ArticleAppraiser.findAll({
+    where: {
+      id_article: idArticle,
+    },
+  })
+    .then((appraisers) => {
+      return appraisers
+        .map((appraiser) => {
+          return appraiser.dataValues?.fg_rated;
+        })
+        .every((isRated) => isRated);
+    })
+    .catch((error) => console.error(error));
+}
+
 async function nrScoreByIdArticle(idArticle) {
   const appraisers = await findAllByIdArticle(idArticle);
 
@@ -68,9 +84,26 @@ async function removeByIdAppraiser(id) {
   });
 }
 
+async function idAppraisersByIdArtigo(idArticle) {
+  return await ArticleAppraiser.findAll({
+    attributes: ["id_appraiser"],
+    where: {
+      id_article: idArticle,
+    },
+  })
+    .then((appraisers) => {
+      return appraisers.map((appraiser) => {
+        return appraiser.dataValues.id_appraiser;
+      });
+    })
+    .catch((error) => console.log(error));
+}
+
 module.exports = {
   findAllByIdArticle,
   nrScoreByIdArticle,
   removeByIdAppraiser,
   findIdArtigosByIdAppraiser,
+  isAllRatedByIdArticle,
+  idAppraisersByIdArtigo,
 };

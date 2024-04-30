@@ -106,14 +106,16 @@ router.post(
   AuthenticationMiddleware.checkRole([UserTypeEnum.ADMIN], true),
   async (req, res) => {
     const { idArticle } = req.params;
+    const optionAppraisers = req.body.options;
+    const hasAppraisers = optionAppraisers !== undefined;
 
-    var idAppraisersNew = Array.isArray(req.body.options)
-      ? req.body.options
-      : [req.body.options];
+    var idAppraisersNew = [];
 
-    idAppraisersNew = idAppraisersNew.map((idAppraiser) =>
-      parseInt(idAppraiser)
-    );
+    if (hasAppraisers) {
+      idAppraisersNew = Array.isArray(optionAppraisers)
+        ? optionAppraisers.map((idAppraiser) => parseInt(idAppraiser))
+        : [parseInt(optionAppraisers)];
+    }
 
     const nrMaxAppraiersArticle = 3;
 
@@ -127,21 +129,19 @@ router.post(
       return;
     }
 
-    const hasAppraisers =
-      req.body.options !== undefined && idAppraisersNew.length > 0;
+    const idAppraisersActual =
+      await ArticleAppraiserController.idAppraisersByIdArtigo(idArticle);
 
-    const idAppraisersActual = await ArticleAppraiser.findAll({
-      attributes: ["id_appraiser"],
-      where: {
-        id_article: idArticle,
-      },
-    })
-      .then((appraisers) => {
-        return appraisers.map((appraiser) => {
-          return appraiser.dataValues.id_appraiser;
-        });
-      })
-      .catch((error) => console.log(error));
+    const isSameValues =
+      idAppraisersActual.length === idAppraisersNew.length &&
+      idAppraisersNew.every((idAppraiser) =>
+        idAppraisersActual.includes(idAppraiser)
+      );
+
+    if (isSameValues) {
+      res.redirect("/article/list");
+      return;
+    }
 
     const idsDelete = idAppraisersActual.filter(
       (idAppraiser) => !hasAppraisers || !idAppraisersNew.includes(idAppraiser)
@@ -154,7 +154,7 @@ router.post(
       },
     });
 
-    const newAuthors = idAppraisersNew
+    const newAppraisers = idAppraisersNew
       .filter((idAppraiser) => !idAppraisersActual.includes(idAppraiser))
       .map((idAppraiser) => {
         return {
@@ -164,18 +164,26 @@ router.post(
       });
 
     if (hasAppraisers) {
-      await ArticleAppraiser.bulkCreate(newAuthors);
+      await ArticleAppraiser.bulkCreate(newAppraisers);
     }
 
     const nrFinalScore = await ArticleAppraiserController.nrScoreByIdArticle(
       idArticle
     );
 
+    const isAllRated = await ArticleAppraiserController.isAllRatedByIdArticle(
+      idArticle
+    );
+
+    const statusArticle = isAllRated
+      ? ArticleStatusEnum.REVISAO
+      : hasAppraisers
+      ? ArticleStatusEnum.AVALIACAO
+      : ArticleStatusEnum.PENDENTE;
+
     await Article.update(
       {
-        tp_status: hasAppraisers
-          ? ArticleStatusEnum.REVISAO
-          : ArticleStatusEnum.PENDENTE,
+        tp_status: statusArticle,
         nr_score: nrFinalScore,
       },
       {
@@ -218,6 +226,17 @@ router.post(
     );
 
     await ArticleController.updateNrScoreByIdArticle(idArticle);
+
+    const isAllRated = await ArticleAppraiserController.isAllRatedByIdArticle(
+      idArticle
+    );
+
+    if (isAllRated) {
+      await ArticleController.updateStatusArticle(
+        ArticleStatusEnum.REVISAO,
+        idArticle
+      );
+    }
 
     res.redirect(`/article/view/${idArticle}`);
   }

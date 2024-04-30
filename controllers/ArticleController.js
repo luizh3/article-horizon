@@ -97,10 +97,24 @@ async function updateNrScoreByIdArticle(idArticle) {
   );
 }
 
+async function updateStatusArticle(tpStatus, idArticle) {
+  await Article.update(
+    {
+      tp_status: tpStatus,
+    },
+    {
+      where: {
+        id_article: idArticle,
+      },
+    }
+  );
+}
+
 module.exports = {
   findById,
   findAll,
   updateById,
   updateNrScoreByIdArticle,
   updateNrScoreByIdArticles,
+  updateStatusArticle,
 };
