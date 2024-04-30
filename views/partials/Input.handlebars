@@ -10,6 +10,11 @@
       name="{{name}}"
       value="{{value}}"
       oninput="validInput(this)"
+      {{#if maxlength}}
+        maxlength="{{maxlength}}"
+      {{else}}
+        maxlength="255"
+      {{/if}}
       {{#if step}}
         step="{{step}}"
       {{/if}}

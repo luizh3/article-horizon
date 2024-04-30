@@ -913,6 +913,20 @@ select {
   -webkit-line-clamp: 4;
 }
 
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
 .block {
   display: block;
 }
@@ -973,6 +987,10 @@ select {
   height: 100%;
 }
 
+.h-12 {
+  height: 3rem;
+}
+
 .min-h-full {
   min-height: 100%;
 }
@@ -1021,6 +1039,22 @@ select {
   width: 100%;
 }
 
+.w-96 {
+  width: 24rem;
+}
+
+.w-1\/2 {
+  width: 50%;
+}
+
+.w-3\/4 {
+  width: 75%;
+}
+
+.w-2\/5 {
+  width: 40%;
+}
+
 .min-w-min {
   min-width: -moz-min-content;
   min-width: min-content;
@@ -1028,6 +1062,24 @@ select {
 
 .max-w-7xl {
   max-width: 80rem;
+}
+
+.max-w-screen-lg {
+  max-width: 1024px;
+}
+
+.max-w-max {
+  max-width: -moz-max-content;
+  max-width: max-content;
+}
+
+.max-w-fit {
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+}
+
+.max-w-screen-md {
+  max-width: 768px;
 }
 
 .flex-1 {
