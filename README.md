@@ -21,3 +21,11 @@ Example: `npx sequelize-cli model:generate --name User --attributes firstName:st
 ## UNDO SEED
 
 `npx sequelize-cli db:seed:undo`
+
+## ENV VARIABLES
+
+`NODE_ENV`:
+Example: development
+
+`API_URL`:
+Example: http://localhost:8082
