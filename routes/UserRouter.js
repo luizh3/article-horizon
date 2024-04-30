@@ -82,6 +82,11 @@ router.get(
   async (req, res) => {
     const user = await UserController.findById(req.params.id);
 
+    if (user === null) {
+      res.redirect("/user/list");
+      return;
+    }
+
     return res.render("pages/user/create", {
       user,
       view: {

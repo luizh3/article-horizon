@@ -6,9 +6,6 @@ const DateHelper = require("../helper/DateHelper");
 const ArticleStatusEnum = require("../enums/ArticleStatusEnum");
 
 async function findById(id) {
-  const authors = await ArticleAuthorController.findAllByIdArticle(id);
-  const appraisers = await ArticleAppraiserController.findAllByIdArticle(id);
-
   const article = await Article.findByPk(id).then((current) => {
     if (current === null) {
       return null;
@@ -28,6 +25,13 @@ async function findById(id) {
       },
     };
   });
+
+  if (article === null) {
+    return null;
+  }
+
+  const authors = await ArticleAuthorController.findAllByIdArticle(id);
+  const appraisers = await ArticleAppraiserController.findAllByIdArticle(id);
 
   return {
     ...article,

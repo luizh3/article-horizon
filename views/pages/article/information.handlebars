@@ -38,8 +38,8 @@
     </div>
   {{/if}}
   <div class="flex flex-col space-y-5">
-    <h2 class="text-3xl font-medium">{{article.title}}</h2>
-    <h2 class="text-lg">{{article.summary}}</h2>
+    <h2 class="text-3xl font-medium break-words">{{article.title}}</h2>
+    <h2 class="text-lg break-words">{{article.summary}}</h2>
     <a class="text-primary cursor-pointer font-medium" href="{{article.linkPdf}}" target="_blank" >Link PDF</a>
     <div class="flex space-x-3 items-center">
       {{> Badge description=article.status.description type=(statusArticleToTypeBadge article.status.type)}}

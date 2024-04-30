@@ -300,6 +300,11 @@ router.get(
 
     var article = await ArticleController.findById(id);
 
+    if (article === null) {
+      res.redirect("/article/list");
+      return;
+    }
+
     if (article.authors.length > 0) {
       article = {
         ...article,
