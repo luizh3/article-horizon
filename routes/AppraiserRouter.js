@@ -95,7 +95,7 @@ async function onErrorLimitAppraisers(
     },
     errors: {
       appraiser: {
-        text: `O limite de avaliador por arigo é ${nrMaxAppraiersArticle}`,
+        text: `O limite de avaliador por artigo é ${nrMaxAppraiersArticle}`,
       },
     },
   });
