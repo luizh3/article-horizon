@@ -3,14 +3,14 @@
     <form action="/user/list" method="GET">
       {{> SearchField placeHolder="Buscar por nome..." value=filters.user.search }}
       <div class="flex items-end space-x-3">
-        {{> select 
+        {{> Select 
         options=filters.user.types 
         description="Função do usuario"
         class="grow"
         name="typeUser"
         defaultOption=true
         defaultDescription="Tipo usuario"}}
-        {{> button text="Buscar" }}
+        {{> Button text="Buscar" }}
       </div>
      </form>
   </div>

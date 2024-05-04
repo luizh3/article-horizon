@@ -36,7 +36,7 @@ router.get(
   "/create",
   AuthenticationMiddleware.checkRole([UserTypeEnum.AUTOR]),
   (req, res) => {
-    res.render("pages/article/create", viewCreateProperties());
+    res.render("pages/article/Create", viewCreateProperties());
   }
 );
 
@@ -62,7 +62,7 @@ async function isValidLimitAuthors(
     return { id: author.id, description: author.name };
   });
 
-  response.render("pages/article/create", {
+  response.render("pages/article/Create", {
     ...viewCreateProperties(),
     article: { ...article, authors },
     errors: {
@@ -142,7 +142,7 @@ router.get(
       (current) => current.idAppraiser === idUserSession
     )[0];
 
-    res.render("pages/article/information", {
+    res.render("pages/article/Information", {
       article,
       view: {
         buttons: {
@@ -243,7 +243,7 @@ router.get(
       ArticleSequelizeFilter.searchOrderScore(search, typeScoreFilter)
     );
 
-    res.render("pages/article/list", {
+    res.render("pages/article/List", {
       articles: articles,
       isAdmin: true,
       filters: {
@@ -316,7 +316,7 @@ router.get(
       };
     }
 
-    res.render("pages/article/create", {
+    res.render("pages/article/Create", {
       article,
       view: {
         title: "Editar artigo",

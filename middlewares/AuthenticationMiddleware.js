@@ -1,4 +1,6 @@
-const UserTypeEnum = require("../enums/UserTypeEnum");
+const {
+  MAIN_CLEAN_LAYOUT_NAME,
+} = require("../helper/constants/handlebarsConstants");
 
 function isAuthenticated() {
   return (req, res, next) => {
@@ -9,7 +11,7 @@ function isAuthenticated() {
 
     if (!hasUserSession) {
       res.render("pages/AccessDenied", {
-        layout: "main-clean",
+        layout: MAIN_CLEAN_LAYOUT_NAME,
       });
       return;
     }
@@ -34,7 +36,7 @@ function checkRole(typeUsersPermited, isJson) {
 
     if (!hasPermission) {
       res.render("pages/AccessDenied", {
-        layout: "main-clean",
+        layout: MAIN_CLEAN_LAYOUT_NAME,
       });
       return;
     }

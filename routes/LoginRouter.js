@@ -2,9 +2,12 @@ const express = require("express");
 const router = express.Router();
 
 const loginController = require("../controllers/LoginController");
+const {
+  MAIN_CLEAN_LAYOUT_NAME,
+} = require("../helper/constants/handlebarsConstants");
 
 router.get("/", (req, res) => {
-  return res.render("pages/login", { layout: "main-clean" });
+  return res.render("pages/Login", { layout: MAIN_CLEAN_LAYOUT_NAME });
 });
 
 router.post("/", async (req, res) => {
@@ -13,8 +16,8 @@ router.post("/", async (req, res) => {
   );
 
   if (!hasIdentifier) {
-    res.render("pages/login", {
-      layout: "main-clean",
+    res.render("pages/Login", {
+      layout: MAIN_CLEAN_LAYOUT_NAME,
       identifier: req.body.identifier,
       errors: {
         identifier: {
@@ -26,8 +29,8 @@ router.post("/", async (req, res) => {
   }
 
   if (!hasPassword) {
-    res.render("pages/login", {
-      layout: "main-clean",
+    res.render("pages/Login", {
+      layout: MAIN_CLEAN_LAYOUT_NAME,
       identifier: req.body.identifier,
       errors: {
         password: {

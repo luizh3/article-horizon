@@ -15,7 +15,7 @@ router.get(
   "/create",
   AuthenticationMiddleware.checkRole([UserTypeEnum.ADMIN]),
   (req, res) => {
-    return res.render("pages/user/create", {
+    return res.render("pages/user/Create", {
       view: {
         title: "Cadastrar usuario",
         description: "Esta pagina destina-se a criação de novos usuarios.",
@@ -54,7 +54,7 @@ router.post(
       return;
     }
 
-    res.render("pages/user/create", {
+    res.render("pages/user/Create", {
       user: {
         ...req.body,
       },
@@ -87,7 +87,7 @@ router.get(
       return;
     }
 
-    return res.render("pages/user/create", {
+    return res.render("pages/user/Create", {
       user,
       view: {
         title: "Editar usuario",
@@ -123,7 +123,7 @@ router.get(
     const users = await UserController.findAll(
       UserSequelizeFilter.searchNameAndUserType(search, typeUser)
     );
-    res.render("pages/user/list", {
+    res.render("pages/user/List", {
       users,
       filters: {
         user: {

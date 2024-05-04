@@ -8,6 +8,9 @@ const AppraiserRouter = require("./AppraiserRouter");
 const UserTypeEnum = require("../enums/UserTypeEnum");
 
 const AuthenticationMiddleware = require("../middlewares/AuthenticationMiddleware");
+const {
+  MAIN_CLEAN_LAYOUT_NAME,
+} = require("../helper/constants/handlebarsConstants");
 
 router.use("/login", LoginRouter);
 router.use("/article", ArticleRouter);
@@ -95,13 +98,13 @@ router.get("/", (req, res) => {
   const userSession = req.session.user;
 
   if (userSession) {
-    res.render("home-logged", {
+    res.render("HomeLogged", {
       options: homeOptions(userSession),
     });
     return;
   }
 
-  res.render("home", { layout: "main-clean" });
+  res.render("Home", { layout: MAIN_CLEAN_LAYOUT_NAME });
 });
 
 router.get(

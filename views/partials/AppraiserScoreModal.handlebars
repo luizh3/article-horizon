@@ -38,7 +38,7 @@
                 name="relevantScore" 
                 value=appraiser.relevantScore 
                 pattern=inputRegex 
-                type="number"
+                type="number" 
                 required=true
                 step="0.01"
                 }}
@@ -47,8 +47,8 @@
           </div>
         </div>
         <div class="bg-gray-50 py-3 sm:flex sm:flex-row-reverse flex flex-end">
-          {{> button class="sm:ml-3" text="Salvar" onClick="onConfirm()"}}
-          {{> button text="Cancelar" width="sm:w-auto" bgColor="bg-white" textColor="text-black" class="ring-1" onClick="onCancel()" }}
+          {{> Button class="sm:ml-3" text="Salvar" onClick="onConfirm()"}}
+          {{> Button text="Cancelar" width="sm:w-auto" bgColor="bg-white" textColor="text-black" class="ring-1" onClick="onCancel()" }}
         </div>
       </div>
     </div>

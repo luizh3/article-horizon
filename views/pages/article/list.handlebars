@@ -3,8 +3,8 @@
       <form action="/article/list" method="GET">
           {{> SearchField placeHolder="Buscar por nome..." value=filters.search }}
           <div class="flex items-end space-x-3">
-            {{> select options=filters.score.options description="Função do usuario" class="grow" name="typeScoreFilter"}}
-            {{> button text="Buscar" }}
+            {{> Select options=filters.score.options description="Função do usuario" class="grow" name="typeScoreFilter"}}
+            {{> Button text="Buscar" }}
           </div>
       </form>
   </div>

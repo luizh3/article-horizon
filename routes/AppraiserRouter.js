@@ -53,7 +53,7 @@ router.get(
       };
     });
 
-    res.render("pages/appraiser/create", {
+    res.render("pages/appraiser/Create", {
       view: {
         idArticle,
         appraiser: {
@@ -83,7 +83,7 @@ async function onErrorLimitAppraisers(
     return { id: appraiser.id, description: appraiser.name };
   });
 
-  response.render("pages/appraiser/create", {
+  response.render("pages/appraiser/Create", {
     view: {
       idArticle,
       appraiser: {
