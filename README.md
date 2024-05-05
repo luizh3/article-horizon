@@ -55,7 +55,7 @@ Para mais detalhes consulte [Migration](https://sequelize.org/docs/v6/other-topi
 
 #### Variável de ambiente
 
-    Criar arquivo .env na raiz do projeto, essas configurações ficam dentro dele.
+Criar arquivo .env na raiz do projeto, essas configurações ficam dentro dele.
 
 - <b>NODE_ENV</b>
 
@@ -93,3 +93,7 @@ Para mais detalhes consulte [Migration](https://sequelize.org/docs/v6/other-topi
 #### Rodar projeto
 
 Executar `npm install` para baixar as dependecias, seguido de um `npm start` dessa forma o projeto vai ser iniciado com o `nodemon` e considerando o arquivo `.env`
+
+#### Imagens
+
+É possível encontrar algumas imagens do resultado final na raiz do projeto em `documentation/images`
