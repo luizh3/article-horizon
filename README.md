@@ -17,10 +17,10 @@ Existem três tipos de usuários com as seguintes permissões:
 ## Tecnologias
 
 <div style="display: inline_block">
-	![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
-	![Sequelize](https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=Sequelize&logoColor=white)
-	![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
-	![Handlebars](https://img.shields.io/badge/Handlebars-FFA500?style=for-the-badge&logoColor=white)
+	<img align="center" alt="NodeJS" src="https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white" />
+	<img align="center" alt="Sequelize" src="https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=Sequelize&logoColor=white" />
+	<img align="center" alt="TailwindCSS" src="https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white" />
+	<img align="center" alt="Handlebars" src="https://img.shields.io/badge/Handlebars-FFA500?style=for-the-badge&logoColor=white" />
 </div>
 
 ## Execução
