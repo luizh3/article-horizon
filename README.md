@@ -66,6 +66,30 @@ Para mais detalhes consulte [Migration](https://sequelize.org/docs/v6/other-topi
 
   Exemplo: `API_URL=http://localhost:8082`
 
+- <b>POSTGRES_USERNAME</b>
+
+  Exemplo: `POSTGRES_USERNAME=postgres`
+
+- <b>POSTGRES_PASSWORD</b>
+
+  Exemplo: `POSTGRES_PASSWORD=postgres`
+
+- <b>POSTGRES_DATABASE</b>
+
+  Exemplo: `POSTGRES_DATABASE=article`
+
+- <b>POSTGRES_HOST</b>
+
+  Exemplo: `POSTGRES_HOST=127.0.0.1` <br>
+  Default: `127.0.0.1` <br>
+  Obrigatorio: `Não`
+
+- <b>POSTGRES_PORT</b>
+
+  Exemplo: `POSTGRES_PORT=5432` <br>
+  Default: `5432` <br>
+  Obrigatorio: `Não`
+
 #### Rodar projeto
 
 Executar `npm install` para baixar as dependecias, seguido de um `npm start` dessa forma o projeto vai ser iniciado com o `nodemon` e considerando o arquivo `.env`
