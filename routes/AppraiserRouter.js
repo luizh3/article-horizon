@@ -3,12 +3,12 @@ const router = express.Router();
 
 const { ArticleAppraiser, Article } = require("../models");
 
-const UserTypeEnum = require("../enums/UserTypeEnum");
-const UserController = require("../controllers/UserController");
-const ArticleAppraiserController = require("../controllers/ArticleAppraiserController");
-const ArticleStatusEnum = require("../enums/ArticleStatusEnum");
-const ArticleController = require("../controllers/ArticleController");
-const AuthenticationMiddleware = require("../middlewares/AuthenticationMiddleware");
+const UserTypeEnum = require("@root/enums/UserTypeEnum");
+const UserController = require("@root/controllers/UserController");
+const ArticleAppraiserController = require("@root/controllers/ArticleAppraiserController");
+const ArticleStatusEnum = require("@root/enums/ArticleStatusEnum");
+const ArticleController = require("@root/controllers/ArticleController");
+const AuthenticationMiddleware = require("@root/middlewares/AuthenticationMiddleware");
 
 router.get(
   "/:name?",

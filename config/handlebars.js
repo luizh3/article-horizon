@@ -1,6 +1,8 @@
 const expressHandlebars = require("express-handlebars");
 
-const { MAIN_LAYOUT_NAME } = require("../helper/constants/handlebarsConstants");
+const {
+  MAIN_LAYOUT_NAME,
+} = require("@root/helper/constants/handlebarsConstants");
 
 exports.init = function (app) {
   app.engine(

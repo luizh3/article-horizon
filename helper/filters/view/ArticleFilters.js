@@ -1,4 +1,4 @@
-const TypeScoreFilterEnum = require("../../../enums/filters/TypeScoreFilterEnum");
+const TypeScoreFilterEnum = require("@root/enums/filters/TypeScoreFilterEnum");
 
 function scoreOrder() {
   return {

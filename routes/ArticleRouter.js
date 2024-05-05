@@ -1,18 +1,18 @@
 const express = require("express");
 const router = express.Router();
 
-const { ArticleAuthor, Article } = require("../models");
+const { ArticleAuthor, Article } = require("@root/models");
 const sequelize = require("sequelize");
 
-const UserTypeEnum = require("../enums/UserTypeEnum");
-const AuthenticationMiddleware = require("../middlewares/AuthenticationMiddleware");
-const ArticleController = require("../controllers/ArticleController");
-const ArticleFilters = require("../helper/filters/view/ArticleFilters");
-const ArticleSequelizeFilter = require("../helper/filters/sequelize/ArticleSequelizeFilter");
-const UserController = require("../controllers/UserController");
-const ArticleHelper = require("../helper/ArticleHelper");
-const ArticleStatusEnum = require("../enums/ArticleStatusEnum");
-const RegexHelper = require("../helper/RegexHelper");
+const UserTypeEnum = require("@root/enums/UserTypeEnum");
+const AuthenticationMiddleware = require("@root/middlewares/AuthenticationMiddleware");
+const ArticleController = require("@root/controllers/ArticleController");
+const ArticleFilters = require("@root/helper/filters/view/ArticleFilters");
+const ArticleSequelizeFilter = require("@root/helper/filters/sequelize/ArticleSequelizeFilter");
+const UserController = require("@root/controllers/UserController");
+const ArticleHelper = require("@root/helper/ArticleHelper");
+const ArticleStatusEnum = require("@root/enums/ArticleStatusEnum");
+const RegexHelper = require("@root/helper/RegexHelper");
 
 function viewCreateProperties() {
   return {

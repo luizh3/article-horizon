@@ -1,4 +1,4 @@
-const { ArticleAppraiser } = require("../models");
+const { ArticleAppraiser } = require("@root/models");
 
 async function findAllByIdArticle(id) {
   return ArticleAppraiser.findAll({

@@ -1,4 +1,4 @@
-const ArticleStatusEnum = require("../enums/ArticleStatusEnum");
+const ArticleStatusEnum = require("@root/enums/ArticleStatusEnum");
 
 function statusArticleToTypeBadge(status) {
   switch (status) {

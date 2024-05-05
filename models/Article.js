@@ -1,7 +1,7 @@
 "use strict";
 
 const { Model } = require("sequelize");
-const ArticleStatusEnum = require("../enums/ArticleStatusEnum");
+const ArticleStatusEnum = require("@root/enums/ArticleStatusEnum");
 
 module.exports = (sequelize, DataTypes) => {
   class Article extends Model {

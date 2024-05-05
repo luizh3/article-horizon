@@ -1,6 +1,6 @@
 const {
   MAIN_CLEAN_LAYOUT_NAME,
-} = require("../helper/constants/handlebarsConstants");
+} = require("@root/helper/constants/handlebarsConstants");
 
 function isAuthenticated() {
   return (req, res, next) => {

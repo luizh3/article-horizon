@@ -1,8 +1,8 @@
 const sequelize = require("sequelize");
-const { User } = require("../models");
+const { User } = require("@root/models");
 
-const UserTypeEnum = require("../enums/UserTypeEnum");
-const SequelizeFilterHelper = require("../helper/filters/sequelize/SequelizeFilterHelper");
+const UserTypeEnum = require("@root/enums/UserTypeEnum");
+const SequelizeFilterHelper = require("@root/helper/filters/sequelize/SequelizeFilterHelper");
 
 async function hasUserRegister(user) {
   return await User.findOne({

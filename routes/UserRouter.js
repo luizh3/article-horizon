@@ -1,15 +1,15 @@
 const express = require("express");
 const router = express.Router();
 
-const UserController = require("../controllers/UserController");
-const ArticleAppraiserController = require("../controllers/ArticleAppraiserController");
-const ArticleAuthorController = require("../controllers/ArticleAuthorController");
-const ArticleController = require("../controllers/ArticleController");
+const UserController = require("@root/controllers/UserController");
+const ArticleAppraiserController = require("@root/controllers/ArticleAppraiserController");
+const ArticleAuthorController = require("@root/controllers/ArticleAuthorController");
+const ArticleController = require("@root/controllers/ArticleController");
 
-const UserHelper = require("../helper/UserHelper");
-const AuthenticationMiddleware = require("../middlewares/AuthenticationMiddleware");
-const UserTypeEnum = require("../enums/UserTypeEnum");
-const UserSequelizeFilter = require("../helper/filters/sequelize/UserSequelizeFilter");
+const UserHelper = require("@root/helper/UserHelper");
+const AuthenticationMiddleware = require("@root/middlewares/AuthenticationMiddleware");
+const UserTypeEnum = require("@root/enums/UserTypeEnum");
+const UserSequelizeFilter = require("@root/helper/filters/sequelize/UserSequelizeFilter");
 
 router.get(
   "/create",

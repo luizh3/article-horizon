@@ -1,4 +1,4 @@
-const UserTypeEnum = require("../enums/UserTypeEnum");
+const UserTypeEnum = require("@root/enums/UserTypeEnum");
 
 function userTypes() {
   return [

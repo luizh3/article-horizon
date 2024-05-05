@@ -1,9 +1,9 @@
-const { Article } = require("../models");
+const { Article } = require("@root/models");
 
-const ArticleAuthorController = require("../controllers/ArticleAuthorController");
-const ArticleAppraiserController = require("../controllers/ArticleAppraiserController");
-const DateHelper = require("../helper/DateHelper");
-const ArticleStatusEnum = require("../enums/ArticleStatusEnum");
+const ArticleAuthorController = require("@root/controllers/ArticleAuthorController");
+const ArticleAppraiserController = require("@root/controllers/ArticleAppraiserController");
+const DateHelper = require("@root/helper/DateHelper");
+const ArticleStatusEnum = require("@root/enums/ArticleStatusEnum");
 
 async function findById(id) {
   const article = await Article.findByPk(id).then((current) => {

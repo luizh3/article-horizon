@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
-const loginController = require("../controllers/LoginController");
+const loginController = require("@root/controllers/LoginController");
 const {
   MAIN_CLEAN_LAYOUT_NAME,
-} = require("../helper/constants/handlebarsConstants");
+} = require("@root/helper/constants/handlebarsConstants");
 
 router.get("/", (req, res) => {
   return res.render("pages/Login", { layout: MAIN_CLEAN_LAYOUT_NAME });

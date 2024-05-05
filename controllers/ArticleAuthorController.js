@@ -1,4 +1,4 @@
-const { ArticleAuthor, User } = require("../models");
+const { ArticleAuthor, User } = require("@root/models");
 
 async function findAllByIdArticle(idArticle) {
   return await findAll({

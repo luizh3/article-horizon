@@ -1,6 +1,6 @@
 const sequelize = require("sequelize");
 
-const TypeScoreFilterEnum = require("../../../enums/filters/TypeScoreFilterEnum");
+const TypeScoreFilterEnum = require("@root/enums/filters/TypeScoreFilterEnum");
 const SequelizeFilterHelper = require("./SequelizeFilterHelper");
 
 function searchOrderScore(search, typeScoreFilter) {
