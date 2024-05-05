@@ -59,12 +59,12 @@ Para mais detalhes consulte [Migration](https://sequelize.org/docs/v6/other-topi
 
 - <b>NODE_ENV</b>
 
-  Valores: `development, test, production`
-  Example: `NODE_ENV=development`
+  Valores: `development, test, production` <br>
+  Exemplo: `NODE_ENV=development`
 
 - <b>API_URL</b>
 
-  Example: `API_URL=http://localhost:8082`
+  Exemplo: `API_URL=http://localhost:8082`
 
 #### Rodar projeto
 
