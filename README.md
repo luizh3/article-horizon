@@ -55,7 +55,7 @@ Para mais detalhes consulte [Migration](https://sequelize.org/docs/v6/other-topi
 
 #### Variável de ambiente
 
-    Criar arquivo .env na raiz do projeto, essas configurações ficam dentro dele.
+Criar arquivo .env na raiz do projeto, essas configurações ficam dentro dele.
 
 - <b>NODE_ENV</b>
 
